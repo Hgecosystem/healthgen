@@ -198,9 +198,8 @@ section { position: relative; }
 .hero-tagline { font-size: 15px; font-weight: 700; letter-spacing: 0.02em; color: var(--text-1); margin: 22px 0 34px; }
 .hero-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; }
 
-/* ═══ PROOF / STAT BAND ═════════════════════════════════════════ */
-.proof-wrap { margin: 20px 2.5vw 0; }
-.proof-panel { border-radius: var(--radius-card); background: var(--surface-1); border: 1px solid var(--surface-1-border); padding: 40px 4%; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 2px 20px var(--surface-shadow); }
+/* ═══ PROOF / STAT BAND (nested inside the hero card) ═══════════ */
+.proof-panel { margin-top: 56px; border-radius: var(--radius-card); background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.16); padding: 40px 4%; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: 0 8px 32px rgba(0,0,0,0.18); }
 .proof-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 18px; }
 .proof-tile { text-align: center; padding: 8px 6px; }
 .proof-num { font-size: clamp(24px, 2.6vw, 34px); font-weight: 800; color: var(--text-1); letter-spacing: -0.02em; }
@@ -354,36 +353,33 @@ section { position: relative; }
         <span class="btn-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       </a>
     </div>
-  </div>
-</section>
 
-<!-- ═══ PROOF BAND ═════════════════════════════════════════════════ -->
-<section class="proof-wrap" aria-label="Our scale">
-  <div class="proof-panel">
-    <div class="proof-grid">
-      <div class="proof-tile js-reveal" data-reveal-delay="0">
-        <div class="proof-num"><span class="accent">298+</span></div>
-        <div class="proof-label">Aged care providers supported</div>
-      </div>
-      <div class="proof-tile js-reveal" data-reveal-delay="60">
-        <div class="proof-num">280+</div>
-        <div class="proof-label">Governance &amp; quality reviews</div>
-      </div>
-      <div class="proof-tile js-reveal" data-reveal-delay="120">
-        <div class="proof-num">73+</div>
-        <div class="proof-label">Remediation programs</div>
-      </div>
-      <div class="proof-tile js-reveal" data-reveal-delay="180">
-        <div class="proof-num">30,900+</div>
-        <div class="proof-label">Older Person reviews</div>
-      </div>
-      <div class="proof-tile js-reveal" data-reveal-delay="240">
-        <div class="proof-num"><span class="accent">$138M+</span></div>
-        <div class="proof-label">Funding improvements identified</div>
-      </div>
-      <div class="proof-tile js-reveal" data-reveal-delay="300">
-        <div class="proof-num">Australia&#8209;wide</div>
-        <div class="proof-label">Provider support</div>
+    <div class="proof-panel">
+      <div class="proof-grid">
+        <div class="proof-tile js-reveal" data-reveal-delay="0">
+          <div class="proof-num"><span class="accent">298+</span></div>
+          <div class="proof-label">Aged care providers supported</div>
+        </div>
+        <div class="proof-tile js-reveal" data-reveal-delay="60">
+          <div class="proof-num">280+</div>
+          <div class="proof-label">Governance &amp; quality reviews</div>
+        </div>
+        <div class="proof-tile js-reveal" data-reveal-delay="120">
+          <div class="proof-num">73+</div>
+          <div class="proof-label">Remediation programs</div>
+        </div>
+        <div class="proof-tile js-reveal" data-reveal-delay="180">
+          <div class="proof-num">30,900+</div>
+          <div class="proof-label">Older Person reviews</div>
+        </div>
+        <div class="proof-tile js-reveal" data-reveal-delay="240">
+          <div class="proof-num"><span class="accent">$138M+</span></div>
+          <div class="proof-label">Funding improvements identified</div>
+        </div>
+        <div class="proof-tile js-reveal" data-reveal-delay="300">
+          <div class="proof-num">Australia&#8209;wide</div>
+          <div class="proof-label">Provider support</div>
+        </div>
       </div>
     </div>
   </div>
