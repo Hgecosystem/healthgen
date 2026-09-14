@@ -6,133 +6,132 @@
 <title>Contact — Health Generation</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
 
 :root {
-  --hg-indigo: #252D64;
-  --hg-indigo-2: #333c82;
-  --hg-navy: #131734;
-  --hg-coral: #FF616B;
-  --hg-teal: #4FBEB3;
-  --hg-teal-deep: #1F6E75;
-  --hg-teal-pale: #DCEFEA;
-
-  --ink-1: #131734;
-  --ink-2: rgba(19,23,52,0.68);
-  --ink-3: rgba(19,23,52,0.5);
-
-  --text-1: rgba(255,255,255,0.96);
-  --text-2: rgba(255,255,255,0.74);
-  --text-3: rgba(255,255,255,0.54);
-
-  --radius-card: 24px;
-  --font: 'Poppins', system-ui, sans-serif;
+  --hg-dominant:   #252D64;
+  --hg-dominant-2: #333c82;
+  --hg-secondary:  #131734;
+  --hg-accent:     #FF616B;
+  --page-bg-base:  #131734;
+  --text-1: rgba(255,255,255,0.95);
+  --text-2: rgba(255,255,255,0.72);
+  --text-3: rgba(255,255,255,0.52);
+  --radius-card: 22px;
+  --font: 'Manrope', system-ui, sans-serif;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
-body { background: #fff; color: var(--ink-1); font-family: var(--font); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: clip; }
+body { background: var(--page-bg-base); color: var(--text-1); font-family: var(--font); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: clip; }
 a { text-decoration: none; color: inherit; }
 ul { list-style: none; }
 img { max-width: 100%; display: block; }
-h1, h2, h3 { font-weight: 700; }
-button { font-family: var(--font); }
 
-/* ═══ NAV ═══════════════════════════════════════════════════════ */
-.nav-outer { position: sticky; top: 0; z-index: 40; display: flex; align-items: center; justify-content: space-between; padding: 16px 2.5vw; background: #fff; border-bottom: 1px solid rgba(19,23,52,0.08); }
-.nav-brand { display: flex; align-items: center; gap: 10px; }
-.brand-tile { width: 38px; height: 38px; border-radius: 11px; background: var(--hg-coral); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.brand-tile svg circle { fill: #fff; }
-.nav-brand-word { font-weight: 700; font-size: 17px; letter-spacing: -0.01em; color: var(--ink-1); line-height: 1.1; }
-.site-nav { display: flex; align-items: center; gap: 30px; }
-.nav-links { display: flex; align-items: center; gap: 26px; }
-.nav-links a { font-size: 14.5px; font-weight: 600; color: var(--ink-2); transition: color 0.2s ease; }
-.nav-links a:hover, .nav-links a.is-active { color: var(--ink-1); }
-.nav-cta { display: inline-flex; align-items: center; gap: 8px; background: var(--hg-coral); color: #fff; font-size: 14px; font-weight: 700; padding: 11px 22px; border-radius: 100px; white-space: nowrap; transition: all 0.2s ease; }
-.nav-cta:hover { background: #ff7a83; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(255,97,107,0.3); }
-.nav-hamburger { display: none; width: 40px; height: 40px; border-radius: 10px; border: 1px solid rgba(19,23,52,0.16); background: #fff; position: relative; cursor: pointer; }
-.nav-hamburger span, .nav-hamburger::before, .nav-hamburger::after { content: ''; position: absolute; left: 10px; right: 10px; height: 1.5px; background: var(--ink-1); transition: all 0.25s ease; }
+.page-bg { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; background: var(--page-bg-base); }
+.bloom { position: absolute; border-radius: 50%; filter: blur(90px); }
+.bloom--left  { width: 620px; height: 620px; top: -160px; left: -180px; background: var(--hg-dominant); opacity: 0.55; }
+.bloom--right { width: 520px; height: 520px; bottom: -160px; right: -160px; background: var(--hg-accent); opacity: 0.16; }
+
+.nav-outer { position: sticky; top: 0; z-index: 40; display: flex; align-items: center; justify-content: space-between; padding: 20px 2.5vw; transition: background 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease; border-bottom: 1px solid transparent; }
+.nav-outer.is-scrolled { background: rgba(19,23,52,0.86); backdrop-filter: blur(14px); border-bottom: 1px solid rgba(255,255,255,0.08); }
+.nav-brand { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: -0.01em; font-size: 18px; color: var(--text-1); }
+.nav-brand-mark { width: 34px; height: 34px; border-radius: 10px; flex-shrink: 0; background: linear-gradient(135deg, var(--hg-dominant-2), var(--hg-secondary)); border: 1px solid rgba(255,255,255,0.18); display: flex; align-items: center; justify-content: center; }
+.nav-brand-mark span { width: 12px; height: 12px; border-radius: 3px; background: var(--hg-accent); }
+.nav-brand-word { white-space: nowrap; }
+.nav-brand-word b { color: var(--hg-accent); font-weight: 800; }
+.site-nav { display: flex; align-items: center; gap: 34px; }
+.nav-links { display: flex; align-items: center; gap: 30px; }
+.nav-links a { font-size: 14.5px; font-weight: 600; color: var(--text-2); transition: color 0.2s ease; }
+.nav-links a:hover, .nav-links a.is-active { color: var(--text-1); }
+.nav-cta { display: inline-flex; align-items: center; gap: 8px; background: var(--hg-accent); color: #fff; font-size: 14px; font-weight: 700; padding: 11px 22px; border-radius: 100px; white-space: nowrap; transition: all 0.2s ease; }
+.nav-cta:hover { background: #ff7a83; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(255,97,107,0.35); }
+.nav-hamburger { display: none; width: 40px; height: 40px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.18); background: rgba(255,255,255,0.05); position: relative; cursor: pointer; }
+.nav-hamburger span, .nav-hamburger::before, .nav-hamburger::after { content: ''; position: absolute; left: 10px; right: 10px; height: 1.5px; background: #fff; transition: all 0.25s ease; }
 .nav-hamburger::before { top: 14px; }
 .nav-hamburger span { top: 19px; }
 .nav-hamburger::after { top: 24px; }
 .nav-hamburger.is-open::before { top: 19px; transform: rotate(45deg); }
 .nav-hamburger.is-open span { opacity: 0; }
 .nav-hamburger.is-open::after { top: 19px; transform: rotate(-45deg); }
-.nav-drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(320px, 82vw); z-index: 50; background: var(--hg-navy); padding: 90px 32px 32px; display: flex; flex-direction: column; gap: 22px; transform: translateX(100%); transition: transform 0.32s ease; }
+.nav-drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(320px, 82vw); z-index: 50; background: var(--hg-secondary); border-left: 1px solid rgba(255,255,255,0.1); padding: 90px 32px 32px; display: flex; flex-direction: column; gap: 22px; transform: translateX(100%); transition: transform 0.32s ease; }
 .nav-drawer.is-open { transform: translateX(0); }
-.nav-drawer a { font-size: 17px; font-weight: 600; color: #fff; }
-.nav-drawer-cta { margin-top: 8px; background: var(--hg-coral); color: #fff; text-align: center; padding: 13px; border-radius: 100px; font-weight: 700; }
+.nav-drawer a { font-size: 17px; font-weight: 600; color: var(--text-1); }
+.nav-drawer-cta { margin-top: 8px; background: var(--hg-accent); color: #fff; text-align: center; padding: 13px; border-radius: 100px; font-weight: 700; }
 @media (max-width: 860px) { .nav-links, .nav-cta { display: none; } .nav-hamburger { display: block; } }
 
-/* ═══ BUTTONS ═══════════════════════════════════════════════════ */
-.btn { display: inline-flex; align-items: center; justify-content: space-between; gap: 10px; border-radius: 100px; font-family: var(--font); font-size: 14.5px; font-weight: 700; cursor: pointer; transition: all 0.22s ease; white-space: nowrap; height: 48px; padding: 0 24px 0 26px; border: none; }
-.btn-primary { background: var(--hg-coral); color: #fff; border: 1.5px solid transparent; }
-.btn-primary:hover { background: #ff7a83; transform: translateY(-1px); box-shadow: 0 8px 28px rgba(255,97,107,0.32); }
-.btn-primary:hover .btn-icon { transform: translateX(4px); }
+.btn { display: inline-flex; align-items: center; justify-content: space-between; gap: 10px; border-radius: 100px; font-family: var(--font); font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.22s ease; white-space: nowrap; height: 48px; padding: 0 24px 0 26px; border: none; }
+.btn-primary { background: var(--hg-accent); color: #fff; border: 1.5px solid transparent; }
+.btn-primary:hover { background: #ff7a83; transform: translateY(-1px); box-shadow: 0 8px 28px rgba(255,97,107,0.35); }
 .btn-icon { display: flex; transition: transform 0.22s ease; }
 
-/* ═══ SHELLS ════════════════════════════════════════════════════ */
-main { position: relative; }
+main { position: relative; z-index: 1; }
+section { position: relative; }
 .shell { max-width: 1180px; margin: 0 auto; padding: 0 2.5vw; }
-.eyebrow-pill { display: inline-flex; align-items: center; font-size: 12.5px; font-weight: 700; padding: 9px 20px; border-radius: 100px; border: 1.5px solid var(--hg-coral); color: var(--ink-1); margin-bottom: 20px; }
-.eyebrow-pill.on-dark { color: #fff; border-color: rgba(255,255,255,0.5); }
-.section-heading { font-size: clamp(24px, 3vw, 36px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 14px; text-wrap: balance; }
-.section-sub { font-size: 15.5px; line-height: 1.7; color: var(--ink-2); max-width: 620px; }
+.eyebrow { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--hg-accent); margin-bottom: 16px; }
 
-/* ═══ PAGE HERO (light) ═════════════════════════════════════════ */
-.page-hero { background: linear-gradient(160deg, #fff 0%, var(--hg-teal-pale) 130%); padding: 64px 2.5vw 60px; }
-.page-hero-inner { max-width: 720px; margin: 0 auto; text-align: center; }
-.page-heading { font-size: clamp(30px, 4.4vw, 46px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.14; margin-bottom: 18px; text-wrap: balance; }
-.page-sub { font-size: 16px; line-height: 1.7; color: var(--ink-2); max-width: 560px; margin: 0 auto; text-wrap: pretty; }
+.page-hero { margin: 12px 2.5vw 0; }
+.page-hero-card { position: relative; overflow: hidden; border-radius: var(--radius-card); padding: 76px 6% 60px; text-align: center; background: linear-gradient(150deg, #333c82 0%, var(--hg-dominant) 55%, var(--hg-secondary) 100%); }
+.page-hero-heading { font-size: clamp(30px, 4.4vw, 48px); font-weight: 800; letter-spacing: -0.025em; line-height: 1.1; margin-bottom: 16px; text-wrap: balance; }
+.page-hero-sub { font-size: 16px; line-height: 1.7; color: var(--text-2); max-width: 620px; margin: 0 auto; text-wrap: pretty; }
 
-/* ═══ CONTACT LAYOUT ══════════════════════════════════════════════ */
-.contact-grid { display: grid; grid-template-columns: 1fr 1.3fr; gap: 56px; align-items: start; max-width: 1180px; margin: 0 auto; padding: 0 2.5vw; }
-@media (max-width: 900px) { .contact-grid { grid-template-columns: 1fr; gap: 36px; } }
+.contact-wrap { margin: 56px 2.5vw 0; }
+.contact-panel { max-width: 660px; margin: 0 auto; border-radius: var(--radius-card); background: rgba(255,255,255,0.035); border: 1px solid rgba(255,255,255,0.1); padding: 48px 6% 52px; }
 
-.contact-info-card { background: var(--hg-navy); border-radius: 22px; padding: 34px 30px; }
-.contact-info-heading { font-size: 19px; font-weight: 700; color: #fff; margin-bottom: 14px; }
-.contact-info-body { font-size: 14px; line-height: 1.7; color: var(--text-2); margin-bottom: 26px; }
-.contact-detail { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
-.contact-detail-icon { width: 36px; height: 36px; border-radius: 10px; background: rgba(79,190,179,0.14); border: 1px solid rgba(79,190,179,0.4); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.contact-detail-text { font-size: 14px; font-weight: 700; color: #fff; }
-.contact-detail-label { font-size: 11.5px; color: var(--text-3); display: block; font-weight: 600; }
-
-.contact-form-card { background: #fff; border: 1px solid rgba(19,23,52,0.1); border-radius: 22px; padding: 36px 32px; }
-.form-row { margin-bottom: 20px; }
-.form-row label { display: block; font-size: 13px; font-weight: 700; color: var(--ink-1); margin-bottom: 8px; }
-.form-row input, .form-row select, .form-row textarea {
-  width: 100%; font-family: var(--font); font-size: 14.5px; color: var(--ink-1);
-  border: 1.5px solid rgba(19,23,52,0.14); border-radius: 12px; padding: 13px 16px;
-  background: #fff; transition: border-color 0.2s ease;
+.whats-happening-label { font-size: 13px; font-weight: 700; color: var(--text-2); margin-bottom: 14px; display: block; }
+.chip-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 32px; }
+.chip { position: relative; }
+.chip input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+.chip label {
+  display: inline-flex; align-items: center; padding: 10px 18px; border-radius: 100px;
+  font-size: 13.5px; font-weight: 600; color: var(--text-2);
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.16);
+  cursor: pointer; transition: all 0.18s ease;
 }
-.form-row input:focus, .form-row select:focus, .form-row textarea:focus { outline: none; border-color: var(--hg-teal); }
-.form-row textarea { resize: vertical; min-height: 120px; }
-.form-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-@media (max-width: 560px) { .form-two-col { grid-template-columns: 1fr; } }
-.form-submit-row { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; margin-top: 6px; }
-.form-note { font-size: 12.5px; color: var(--ink-3); }
-.form-success { display: none; background: var(--hg-teal-pale); border-radius: 14px; padding: 16px 18px; font-size: 14px; color: var(--ink-1); font-weight: 600; margin-top: 18px; }
-.form-success.is-visible { display: block; }
+.chip input:hover + label { border-color: rgba(255,255,255,0.32); color: var(--text-1); }
+.chip input:checked + label { background: rgba(255,97,107,0.14); border-color: var(--hg-accent); color: #fff; }
+.chip input:focus-visible + label { outline: 2px solid var(--hg-accent); outline-offset: 2px; }
 
-/* ═══ FOOTER ═════════════════════════════════════════════════════ */
-.site-footer { background: var(--hg-navy); padding: 48px 2.5vw 32px; margin-top: 80px; }
-.footer-top { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; max-width: 1180px; margin: 0 auto 24px; }
-.footer-logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 16px; color: #fff; }
+.contact-form { text-align: left; }
+.form-row { display: flex; gap: 16px; }
+.form-row .form-field { flex: 1; }
+.form-field { margin-bottom: 18px; display: flex; flex-direction: column; gap: 7px; }
+.form-field label { font-size: 12.5px; font-weight: 600; color: var(--text-2); }
+.form-field input, .form-field textarea {
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 10px; padding: 12px 14px; color: #fff;
+  font-family: var(--font); font-size: 14.5px; resize: vertical;
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+.form-field input::placeholder, .form-field textarea::placeholder { color: var(--text-3); }
+.form-field input:focus, .form-field textarea:focus {
+  outline: none; border-color: var(--hg-accent); background: rgba(255,255,255,0.10);
+  box-shadow: 0 0 0 3px rgba(255,97,107,0.18);
+}
+.contact-form-submit { width: 100%; justify-content: center; margin-top: 4px; }
+.form-fineprint { font-size: 12.5px; color: var(--text-3); text-align: center; margin-top: 16px; }
+
+.form-success { text-align: center; padding: 8px 0 4px; max-width: 460px; margin: 0 auto; }
+.form-success-title { font-size: 20px; font-weight: 700; color: var(--text-1); margin-bottom: 8px; }
+.form-success-body { font-size: 15px; color: var(--text-2); line-height: 1.6; }
+
+@media (max-width: 600px) { .form-row { flex-direction: column; gap: 0; } }
+
+.site-footer { margin: 60px 2.5vw 0; padding: 48px 2.5vw 36px; background: var(--hg-secondary); border-top: 1px solid rgba(255,255,255,0.08); position: relative; z-index: 1; }
+.footer-top { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; max-width: 1180px; margin: 0 auto 28px; }
+.footer-logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 16px; }
 .footer-social { display: flex; gap: 14px; }
-.footer-social a { width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.18); display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; }
-.footer-social a:hover { background: var(--hg-coral); border-color: var(--hg-coral); }
-.footer-social svg { width: 16px; height: 16px; fill: #fff; }
-.footer-contact { display: flex; flex-wrap: wrap; gap: 24px; max-width: 1180px; margin: 0 auto 20px; font-size: 13.5px; color: var(--text-2); border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; }
-.footer-contact a { font-weight: 700; color: #fff; }
-.footer-links { display: flex; flex-wrap: wrap; gap: 24px; max-width: 1180px; margin: 0 auto 20px; }
-.footer-links a { font-size: 13px; color: var(--text-2); font-weight: 600; }
-.footer-links a:hover { color: #fff; }
-.footer-copy { max-width: 1180px; margin: 0 auto; font-size: 12px; color: var(--text-3); }
+.footer-social a { width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.16); display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; }
+.footer-social a:hover { background: var(--hg-accent); border-color: var(--hg-accent); }
+.footer-social svg { width: 16px; height: 16px; fill: var(--text-1); }
+.footer-links { display: flex; flex-wrap: wrap; gap: 26px; max-width: 1180px; margin: 0 auto 24px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 24px; }
+.footer-links a { font-size: 13.5px; color: var(--text-2); font-weight: 600; }
+.footer-links a:hover { color: var(--text-1); }
+.footer-copy { max-width: 1180px; margin: 0 auto; font-size: 12.5px; color: var(--text-3); }
 
-/* ═══ SCROLL-REVEAL ══════════════════════════════════════════════ */
-.js-reveal { opacity: 0; transform: translateY(26px); transition: opacity 0.6s ease-out, transform 0.4s ease-out; }
+.js-reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.6s ease-out, transform 0.4s ease-out; }
 .js-reveal.js-reveal--visible { opacity: 1; transform: translateY(0); }
 @media (prefers-reduced-motion: reduce) { .js-reveal { opacity: 1; transform: none; transition: none; } }
 
@@ -140,10 +139,15 @@ main { position: relative; }
 </head>
 <body>
 
+<div class="page-bg" aria-hidden="true">
+  <div class="bloom bloom--left"></div>
+  <div class="bloom bloom--right"></div>
+</div>
+
 <div class="nav-outer">
   <a href="index.html" class="nav-brand">
-    <span class="brand-tile" aria-hidden="true"><svg width="14" height="20" viewBox="0 0 14 20"><circle cx="7" cy="5" r="3"/><circle cx="7" cy="15" r="3"/></svg></span>
-    <span class="nav-brand-word">health<br>generation</span>
+    <span class="nav-brand-mark" aria-hidden="true"><span></span></span>
+    <span class="nav-brand-word">Health<b>Generation</b></span>
   </a>
   <nav class="site-nav" aria-label="Main navigation">
     <ul class="nav-links">
@@ -167,86 +171,81 @@ main { position: relative; }
 
 <main>
 
-<!-- ═══ PAGE HERO ══════════════════════════════════════════════════ -->
-<section class="page-hero" aria-label="Contact intro">
-  <div class="page-hero-inner">
-    <span class="eyebrow-pill">Let's solve what's next</span>
-    <h1 class="page-heading">Tell us what's happening.</h1>
-    <p class="page-sub">Not sure what you need? Start with a conversation. Tell us what's happening — whether it's risk, regulation, care planning, capability, funding, technology or something new. You don't need to know the answer.</p>
+<section class="page-hero" aria-label="Page hero">
+  <div class="page-hero-card">
+    <span style="display:inline-block;font-size:12.5px;font-weight:700;letter-spacing:.06em;color:var(--text-1);background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);padding:8px 18px;border-radius:100px;margin-bottom:24px;">Contact</span>
+    <h1 class="page-hero-heading">What's happening?</h1>
+    <p class="page-hero-sub">You don't need to know which HG capability you need. Tell us what's going on, and we'll get back to you with how we can help.</p>
   </div>
 </section>
 
-<!-- ═══ CONTACT GRID ═══════════════════════════════════════════════ -->
-<section style="margin-top:56px; margin-bottom:80px;" aria-label="Contact form and details">
-  <div class="contact-grid">
-    <div class="contact-info-card js-reveal" data-reveal-delay="0">
-      <p class="contact-info-heading">Get in touch</p>
-      <p class="contact-info-body">Reach the Health Generation team directly, or use the form and we'll come back to you.</p>
+<section class="contact-wrap" aria-label="Contact form">
+  <div class="contact-panel">
 
-      <div class="contact-detail">
-        <span class="contact-detail-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v14H4z" stroke="#4FBEB3" stroke-width="1.6"/><path d="M4 6l8 7 8-7" stroke="#4FBEB3" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-        <span><span class="contact-detail-label">Email</span><a class="contact-detail-text" href="mailto:team@healthgen.io">team@healthgen.io</a></span>
+    <form class="contact-form js-reveal" data-reveal-delay="0" id="hgContactForm" novalidate>
+
+      <span class="whats-happening-label">What's happening? (select one)</span>
+      <div class="chip-grid" role="radiogroup" aria-label="What's happening">
+        <span class="chip"><input type="radio" name="topic" id="topic-quality" value="Quality / clinical concern" required><label for="topic-quality">Quality / clinical concern</label></span>
+        <span class="chip"><input type="radio" name="topic" id="topic-pressure" value="Service under pressure"><label for="topic-pressure">Service under pressure</label></span>
+        <span class="chip"><input type="radio" name="topic" id="topic-planning" value="Care planning"><label for="topic-planning">Care planning</label></span>
+        <span class="chip"><input type="radio" name="topic" id="topic-funding" value="Funding"><label for="topic-funding">Funding</label></span>
+        <span class="chip"><input type="radio" name="topic" id="topic-workforce" value="Workforce"><label for="topic-workforce">Workforce</label></span>
+        <span class="chip"><input type="radio" name="topic" id="topic-tech" value="Technology / care intelligence"><label for="topic-tech">Technology / care intelligence</label></span>
+        <span class="chip"><input type="radio" name="topic" id="topic-new" value="New service / acquisition"><label for="topic-new">New service / acquisition</label></span>
+        <span class="chip"><input type="radio" name="topic" id="topic-other" value="Something else"><label for="topic-other">Something else</label></span>
       </div>
-      <div class="contact-detail">
-        <span class="contact-detail-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 3h3l2 5-2.5 1.5a11 11 0 005 5L15 12l5 2v3a2 2 0 01-2 2A15 15 0 016 5a2 2 0 010-2z" stroke="#4FBEB3" stroke-width="1.4" stroke-linejoin="round"/></svg></span>
-        <span><span class="contact-detail-label">Phone</span><a class="contact-detail-text" href="tel:1300909913">1300 909 913</a></span>
+
+      <div class="form-row">
+        <div class="form-field">
+          <label for="cf-first">First name</label>
+          <input type="text" id="cf-first" name="firstName" autocomplete="given-name" required>
+        </div>
+        <div class="form-field">
+          <label for="cf-last">Last name</label>
+          <input type="text" id="cf-last" name="lastName" autocomplete="family-name" required>
+        </div>
       </div>
-      <div class="contact-detail">
-        <span class="contact-detail-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#4FBEB3" stroke-width="1.6"/><path d="M3 12h18M12 3a15 15 0 010 18M12 3a15 15 0 000 18" stroke="#4FBEB3" stroke-width="1.3"/></svg></span>
-        <span><span class="contact-detail-label">Website</span><a class="contact-detail-text" href="https://healthgen.io">healthgen.io</a></span>
+
+      <div class="form-row">
+        <div class="form-field">
+          <label for="cf-role">Role</label>
+          <input type="text" id="cf-role" name="role" placeholder="e.g. CEO, Director of Nursing" autocomplete="organization-title">
+        </div>
+        <div class="form-field">
+          <label for="cf-org">Organisation</label>
+          <input type="text" id="cf-org" name="organisation" autocomplete="organization" required>
+        </div>
       </div>
+
+      <div class="form-row">
+        <div class="form-field">
+          <label for="cf-email">Email</label>
+          <input type="email" id="cf-email" name="email" autocomplete="email" required>
+        </div>
+        <div class="form-field">
+          <label for="cf-phone">Phone</label>
+          <input type="tel" id="cf-phone" name="phone" autocomplete="tel">
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label for="cf-message">Tell us more</label>
+        <textarea id="cf-message" name="message" rows="4" placeholder="What's happening in your organisation right now?"></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-primary contact-form-submit">
+        Tell Us What's Happening
+        <span class="btn-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </button>
+      <p class="form-fineprint">We'll come back to you personally — no auto-replies, no sales queue.</p>
+    </form>
+
+    <div class="form-success" id="formSuccess" hidden>
+      <p class="form-success-title">Thanks, <span id="formSuccessName">there</span>.</p>
+      <p class="form-success-body">Your email app should have opened with your message ready to send to our team. If it didn't, email us directly at <a href="mailto:hello@healthgen.io" style="color:var(--hg-accent);font-weight:700;">hello@healthgen.io</a>.</p>
     </div>
 
-    <div class="contact-form-card js-reveal" data-reveal-delay="90">
-      <form id="discoveryForm">
-        <div class="form-two-col">
-          <div class="form-row">
-            <label for="name">Your name</label>
-            <input type="text" id="name" name="name" required>
-          </div>
-          <div class="form-row">
-            <label for="organisation">Organisation</label>
-            <input type="text" id="organisation" name="organisation" required>
-          </div>
-        </div>
-        <div class="form-two-col">
-          <div class="form-row">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" required>
-          </div>
-          <div class="form-row">
-            <label for="phone">Phone</label>
-            <input type="tel" id="phone" name="phone">
-          </div>
-        </div>
-        <div class="form-row">
-          <label for="topic">What's happening?</label>
-          <select id="topic" name="topic">
-            <option>Quality or compliance concern</option>
-            <option>Care planning</option>
-            <option>A service that's struggling</option>
-            <option>Workforce need</option>
-            <option>Funding &amp; sustainability</option>
-            <option>Audit, review or regulatory change</option>
-            <option>Care intelligence &amp; technology</option>
-            <option>Commissioning a new service</option>
-            <option>Not sure yet</option>
-          </select>
-        </div>
-        <div class="form-row">
-          <label for="message">Tell us what's happening</label>
-          <textarea id="message" name="message" required placeholder="A short description is enough to get started."></textarea>
-        </div>
-        <div class="form-submit-row">
-          <button type="submit" class="btn btn-primary">
-            Send
-            <span class="btn-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-          </button>
-          <span class="form-note">Opens your email client to send to team@healthgen.io.</span>
-        </div>
-        <p class="form-success" id="formSuccess">Thanks — your email client should now be open with your message ready to send to team@healthgen.io.</p>
-      </form>
-    </div>
   </div>
 </section>
 
@@ -255,19 +254,14 @@ main { position: relative; }
 <footer class="site-footer" aria-label="Site footer">
   <div class="footer-top">
     <a href="index.html" class="footer-logo">
-      <span class="brand-tile" aria-hidden="true"><svg width="12" height="18" viewBox="0 0 14 20"><circle cx="7" cy="5" r="3"/><circle cx="7" cy="15" r="3"/></svg></span>
-      health generation
+      <span class="nav-brand-mark" aria-hidden="true"><span></span></span>
+      Health<b style="color:var(--hg-accent)">Generation</b>
     </a>
     <div class="footer-social">
       <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
       <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97h-1.513c-1.491 0-1.956.93-1.956 1.886v2.267h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg></a>
       <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
     </div>
-  </div>
-  <div class="footer-contact">
-    <span><a href="https://healthgen.io">healthgen.io</a></span>
-    <span><a href="mailto:team@healthgen.io">team@healthgen.io</a></span>
-    <span><a href="tel:1300909913">1300 909 913</a></span>
   </div>
   <ul class="footer-links">
     <li><a href="index.html">Home</a></li>
@@ -281,7 +275,7 @@ main { position: relative; }
 
 <script>
 (function () {
-  var btn = document.querySelector('.nav-hamburger');
+  var btn    = document.querySelector('.nav-hamburger');
   var drawer = document.getElementById('nav-drawer');
   if (!btn || !drawer) return;
   function openMenu() { drawer.classList.add('is-open'); btn.classList.add('is-open'); btn.setAttribute('aria-expanded','true'); btn.setAttribute('aria-label','Close menu'); document.body.style.overflow = 'hidden'; }
@@ -293,49 +287,73 @@ main { position: relative; }
 </script>
 <script>
 (function () {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var els = document.querySelectorAll('.js-reveal');
-  if (!els.length) return;
-  var observer = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) {
-      var el = entry.target;
-      if (entry.isIntersecting) {
-        var delay = parseFloat(el.dataset.revealDelay) || 0;
-        setTimeout(function () { el.classList.add('js-reveal--visible'); }, delay);
-      } else {
-        el.classList.remove('js-reveal--visible');
-      }
-    });
-  }, { threshold: 0.15 });
-  els.forEach(function (el) { observer.observe(el); });
+  var navOuter = document.querySelector('.nav-outer');
+  if (!navOuter) return;
+  function update() { navOuter.classList.toggle('is-scrolled', window.scrollY > 10); }
+  window.addEventListener('scroll', update, { passive: true });
+  update();
 })();
 </script>
 <script>
 (function () {
-  var form = document.getElementById('discoveryForm');
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var reveals = document.querySelectorAll('.js-reveal');
+  if (reveals.length) {
+    var revealObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        var el = entry.target;
+        if (entry.isIntersecting) {
+          var delay = parseFloat(el.dataset.revealDelay) || 0;
+          setTimeout(function () { el.classList.add('js-reveal--visible'); }, delay);
+        } else { el.classList.remove('js-reveal--visible'); }
+      });
+    }, { threshold: 0.15 });
+    reveals.forEach(function (el) { revealObserver.observe(el); });
+  }
+})();
+</script>
+
+<!-- Contact form submit -->
+<script>
+(function () {
+  var form = document.getElementById('hgContactForm');
   var success = document.getElementById('formSuccess');
-  if (!form) return;
+  var successName = document.getElementById('formSuccessName');
+  if (!form || !success) return;
+
   form.addEventListener('submit', function (e) {
     e.preventDefault();
-    var name = form.name.value.trim();
+    if (!form.checkValidity()) { form.reportValidity(); return; }
+
+    var topic = (form.topic && form.querySelector('input[name="topic"]:checked')) ? form.querySelector('input[name="topic"]:checked').value : 'Not specified';
+    var first = form.firstName.value.trim();
+    var last = form.lastName.value.trim();
+    var role = form.role.value.trim();
     var org = form.organisation.value.trim();
     var email = form.email.value.trim();
     var phone = form.phone.value.trim();
-    var topic = form.topic.value;
     var message = form.message.value.trim();
-    var subject = 'Enquiry from ' + name + (org ? ' (' + org + ')' : '');
+
+    var subject = encodeURIComponent('Health Generation enquiry — ' + topic + ' — ' + org);
     var bodyLines = [
-      'Name: ' + name,
+      'What\'s happening: ' + topic,
+      'Name: ' + first + ' ' + last,
+      'Role: ' + (role || 'Not provided'),
       'Organisation: ' + org,
       'Email: ' + email,
-      'Phone: ' + (phone || '—'),
-      'Topic: ' + topic,
+      'Phone: ' + (phone || 'Not provided'),
       '',
-      message
+      'Message:',
+      message || '(none provided)'
     ];
-    var mailto = 'mailto:team@healthgen.io?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(bodyLines.join('\n'));
+    var body = encodeURIComponent(bodyLines.join('\n'));
+    var mailto = 'mailto:hello@healthgen.io?subject=' + subject + '&body=' + body;
+
+    if (successName) successName.textContent = first || 'there';
+    form.hidden = true;
+    success.hidden = false;
+
     window.location.href = mailto;
-    if (success) success.classList.add('is-visible');
   });
 })();
 </script>
