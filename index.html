@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Health Generation — Better care. Stronger providers.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+/* ═══════════════════════════════════════════════════════════════
+   Health Generation — site style
+   Brand: dominant #252D64 (indigo) · secondary #131734 (navy)
+          accent #FF616B (coral). 60/30/10 system per healthgen-brand.
+   Shared structural system: nav, gradient hero, cap-card grid,
+   CTA panel, footer, scroll-reveal.
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  --hg-dominant:   #252D64;
+  --hg-dominant-2: #333c82;
+  --hg-secondary:  #131734;
+  --hg-accent:     #FF616B;
+
+  --page-bg-base:  #131734;
+
+  --text-1: rgba(255,255,255,0.95);
+  --text-2: rgba(255,255,255,0.72);
+  --text-3: rgba(255,255,255,0.52);
+
+  --radius-card: 22px;
+  --font: 'Manrope', system-ui, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--page-bg-base);
+  color: var(--text-1);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+img { max-width: 100%; display: block; }
+
+.page-bg { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; background: var(--page-bg-base); }
+.bloom { position: absolute; border-radius: 50%; filter: blur(90px); }
+.bloom--left  { width: 620px; height: 620px; top: -160px; left: -180px; background: var(--hg-dominant); opacity: 0.55; }
+.bloom--right { width: 520px; height: 520px; bottom: -160px; right: -160px; background: var(--hg-accent); opacity: 0.16; }
+
+/* ═══ NAV ═══════════════════════════════════════════════════════ */
+.nav-outer { position: sticky; top: 0; z-index: 40; display: flex; align-items: center; justify-content: space-between; padding: 20px 2.5vw; transition: background 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease; border-bottom: 1px solid transparent; }
+.nav-outer.is-scrolled { background: rgba(19,23,52,0.86); backdrop-filter: blur(14px); border-bottom: 1px solid rgba(255,255,255,0.08); }
+.nav-brand { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: -0.01em; font-size: 18px; color: var(--text-1); }
+.nav-brand-mark { width: 34px; height: 34px; border-radius: 10px; flex-shrink: 0; background: linear-gradient(135deg, var(--hg-dominant-2), var(--hg-secondary)); border: 1px solid rgba(255,255,255,0.18); display: flex; align-items: center; justify-content: center; }
+.nav-brand-mark span { width: 12px; height: 12px; border-radius: 3px; background: var(--hg-accent); }
+.nav-brand-word { white-space: nowrap; }
+.nav-brand-word b { color: var(--hg-accent); font-weight: 800; }
+.site-nav { display: flex; align-items: center; gap: 34px; }
+.nav-links { display: flex; align-items: center; gap: 30px; }
+.nav-links a { font-size: 14.5px; font-weight: 600; color: var(--text-2); transition: color 0.2s ease; }
+.nav-links a:hover, .nav-links a.is-active { color: var(--text-1); }
+.nav-cta { display: inline-flex; align-items: center; gap: 8px; background: var(--hg-accent); color: #fff; font-size: 14px; font-weight: 700; padding: 11px 22px; border-radius: 100px; white-space: nowrap; transition: all 0.2s ease; }
+.nav-cta:hover { background: #ff7a83; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(255,97,107,0.35); }
+.nav-hamburger { display: none; width: 40px; height: 40px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.18); background: rgba(255,255,255,0.05); position: relative; cursor: pointer; }
+.nav-hamburger span, .nav-hamburger::before, .nav-hamburger::after { content: ''; position: absolute; left: 10px; right: 10px; height: 1.5px; background: #fff; transition: all 0.25s ease; }
+.nav-hamburger::before { top: 14px; }
+.nav-hamburger span { top: 19px; }
+.nav-hamburger::after { top: 24px; }
+.nav-hamburger.is-open::before { top: 19px; transform: rotate(45deg); }
+.nav-hamburger.is-open span { opacity: 0; }
+.nav-hamburger.is-open::after { top: 19px; transform: rotate(-45deg); }
+.nav-drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(320px, 82vw); z-index: 50; background: var(--hg-secondary); border-left: 1px solid rgba(255,255,255,0.1); padding: 90px 32px 32px; display: flex; flex-direction: column; gap: 22px; transform: translateX(100%); transition: transform 0.32s ease; }
+.nav-drawer.is-open { transform: translateX(0); }
+.nav-drawer a { font-size: 17px; font-weight: 600; color: var(--text-1); }
+.nav-drawer-cta { margin-top: 8px; background: var(--hg-accent); color: #fff; text-align: center; padding: 13px; border-radius: 100px; font-weight: 700; }
+@media (max-width: 860px) { .nav-links, .nav-cta { display: none; } .nav-hamburger { display: block; } }
+
+/* ═══ BUTTONS ═══════════════════════════════════════════════════ */
+.btn { display: inline-flex; align-items: center; justify-content: space-between; gap: 10px; border-radius: 100px; font-family: var(--font); font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.22s ease; white-space: nowrap; height: 48px; padding: 0 24px 0 26px; }
+.btn-primary { background: var(--hg-accent); color: #fff; border: 1.5px solid transparent; }
+.btn-primary:hover { background: #ff7a83; transform: translateY(-1px); box-shadow: 0 8px 28px rgba(255,97,107,0.35); }
+.btn-primary:hover .btn-icon { transform: translateX(4px); }
+.btn-secondary { background: transparent; color: var(--text-2); border: 1.5px solid rgba(255,255,255,0.22); }
+.btn-secondary:hover { border-color: rgba(255,255,255,0.42); color: #fff; background: rgba(255,255,255,0.06); }
+.btn-icon { display: flex; transition: transform 0.22s ease; }
+
+/* ═══ MAIN / SECTION SHELLS ═════════════════════════════════════ */
+main { position: relative; z-index: 1; }
+section { position: relative; }
+.shell { max-width: 1180px; margin: 0 auto; padding: 0 2.5vw; }
+.eyebrow { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--hg-accent); margin-bottom: 16px; }
+.section-heading { font-size: clamp(26px, 3.4vw, 42px); font-weight: 800; letter-spacing: -0.025em; line-height: 1.15; margin-bottom: 16px; text-wrap: balance; }
+.section-sub { font-size: 16px; line-height: 1.7; color: var(--text-2); max-width: 680px; text-wrap: pretty; }
+.section-header { margin-bottom: 44px; }
+.section-header.center { text-align: center; margin-left: auto; margin-right: auto; }
+.section-header.center .section-sub { margin-left: auto; margin-right: auto; }
+
+/* ═══ HERO ══════════════════════════════════════════════════════ */
+.hero-wrap { margin: 12px 2.5vw 0; }
+.hero-card { position: relative; overflow: hidden; border-radius: var(--radius-card); padding: 108px 6% 84px; text-align: center; background: radial-gradient(1200px 600px at 20% -10%, rgba(255,97,107,0.16), transparent 60%), linear-gradient(150deg, #333c82 0%, var(--hg-dominant) 45%, var(--hg-secondary) 100%); }
+.hero-badge { display: inline-block; font-size: 12.5px; font-weight: 700; letter-spacing: 0.06em; color: var(--text-1); background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); padding: 8px 18px; border-radius: 100px; margin-bottom: 28px; }
+.hero-heading { font-size: clamp(36px, 5.6vw, 64px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.06; margin-bottom: 22px; text-wrap: balance; }
+.hero-heading .accent { color: var(--hg-accent); }
+.hero-sub { font-size: clamp(16px, 1.6vw, 19px); line-height: 1.7; color: var(--text-2); max-width: 640px; margin: 0 auto 20px; text-wrap: pretty; }
+.hero-words { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 8px; margin: 28px 0 10px; }
+.hero-word { font-size: 12.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-1); background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); padding: 9px 16px; border-radius: 100px; }
+.hero-words-sep { display: flex; align-items: center; color: var(--hg-accent); font-weight: 700; }
+.hero-tagline { font-size: 15px; font-weight: 700; letter-spacing: 0.02em; color: var(--text-1); margin: 22px 0 34px; }
+.hero-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; }
+
+/* ═══ PROOF / STAT BAND ═════════════════════════════════════════ */
+.proof-wrap { margin: 20px 2.5vw 0; }
+.proof-panel { border-radius: var(--radius-card); background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); padding: 40px 4%; }
+.proof-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 18px; }
+.proof-tile { text-align: center; padding: 8px 6px; }
+.proof-num { font-size: clamp(24px, 2.6vw, 34px); font-weight: 800; color: var(--text-1); letter-spacing: -0.02em; }
+.proof-num .accent { color: var(--hg-accent); }
+.proof-label { font-size: 12.5px; color: var(--text-2); margin-top: 6px; line-height: 1.4; }
+@media (max-width: 980px) { .proof-grid { grid-template-columns: repeat(3, 1fr); row-gap: 28px; } }
+@media (max-width: 560px) { .proof-grid { grid-template-columns: repeat(2, 1fr); } }
+
+/* ═══ CAP-CARD GRID (shared component) ═════════════════════════ */
+.cap-section { margin: 64px 2.5vw 0; }
+.cap-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.cap-grid--3 { grid-template-columns: repeat(3, 1fr); }
+.cap-grid--2 { grid-template-columns: repeat(2, 1fr); }
+.cap-card { position: relative; background: rgba(255,255,255,0.045); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-card); padding: 30px 26px 32px; transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease; }
+.cap-card:hover { transform: translateY(-6px); border-color: rgba(255,255,255,0.22); background: rgba(255,255,255,0.07); box-shadow: 0 20px 44px rgba(0,0,0,0.28); }
+.cap-icon-wrap { width: 48px; height: 48px; border-radius: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-bottom: 20px; background: linear-gradient(135deg, var(--hg-dominant-2), var(--hg-secondary)); border: 1px solid rgba(255,255,255,0.14); }
+.cap-card-tag { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--hg-accent); margin-bottom: 8px; }
+.cap-card-heading { font-size: 18px; font-weight: 700; color: var(--text-1); letter-spacing: -0.015em; margin-bottom: 10px; }
+.cap-card-body { font-size: 14.5px; line-height: 1.7; color: var(--text-2); }
+.cap-card-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 16px; font-size: 13.5px; font-weight: 700; color: var(--hg-accent); }
+.cap-card-link svg { transition: transform 0.2s ease; }
+.cap-card:hover .cap-card-link svg { transform: translateX(3px); }
+@media (max-width: 980px) { .cap-grid, .cap-grid--3 { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 620px) { .cap-grid, .cap-grid--3, .cap-grid--2 { grid-template-columns: 1fr; } }
+
+/* ═══ PANEL ══════════════════════════════════════════════════════ */
+.panel { border-radius: var(--radius-card); background: rgba(255,255,255,0.035); border: 1px solid rgba(255,255,255,0.1); padding: 52px 5%; }
+
+/* ═══ MODEL COMPARISON ══════════════════════════════════════════ */
+.model-row { display: flex; flex-wrap: wrap; align-items: stretch; gap: 10px; margin-bottom: 18px; }
+.model-label { width: 100%; font-size: 12.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); margin-bottom: 10px; }
+.model-row.is-hg .model-label { color: var(--hg-accent); }
+.model-step { flex: 1 1 120px; text-align: center; padding: 16px 10px; border-radius: 14px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); font-size: 13.5px; font-weight: 700; color: var(--text-2); position: relative; }
+.model-row.is-traditional .model-step { opacity: 0.55; }
+.model-row.is-hg .model-step { color: var(--text-1); background: rgba(255,97,107,0.08); border-color: rgba(255,97,107,0.28); }
+.model-arrow { display: flex; align-items: center; color: var(--text-3); flex: 0 0 auto; }
+.model-row.is-hg .model-arrow { color: var(--hg-accent); }
+.model-stop { flex: 1 1 100%; text-align: center; font-size: 12px; font-weight: 700; color: var(--text-3); letter-spacing: 0.06em; text-transform: uppercase; margin-top: 6px; }
+.model-closing { text-align: center; font-size: 17px; font-weight: 700; color: var(--text-1); margin-top: 28px; }
+.model-closing .accent { color: var(--hg-accent); }
+@media (max-width: 700px) { .model-row { flex-direction: column; } .model-arrow { transform: rotate(90deg); justify-content: center; } }
+
+/* ═══ JOURNEY STEPS ═════════════════════════════════════════════ */
+.journey-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px; }
+.journey-step { padding: 12px 20px; border-radius: 100px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); font-size: 13.5px; font-weight: 700; color: var(--text-1); }
+.journey-step.is-last { background: rgba(255,97,107,0.12); border-color: rgba(255,97,107,0.32); color: var(--hg-accent); }
+.journey-arrow { color: var(--text-3); flex: 0 0 auto; }
+@media (max-width: 700px) { .journey-row { flex-direction: column; } .journey-arrow { transform: rotate(90deg); } }
+
+/* ═══ CASE STUDY CARDS (preview) ════════════════════════════════ */
+.case-card { background: rgba(255,255,255,0.045); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-card); padding: 32px 28px 30px; transition: transform 0.25s ease, border-color 0.25s ease; }
+.case-card:hover { transform: translateY(-6px); border-color: rgba(255,255,255,0.22); }
+.case-tag { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); padding: 5px 12px; border-radius: 100px; margin-bottom: 18px; }
+.case-block { margin-bottom: 14px; }
+.case-block b { display: block; font-size: 11.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--hg-accent); margin-bottom: 4px; }
+.case-block p { font-size: 14.5px; line-height: 1.65; color: var(--text-2); }
+
+/* ═══ FINAL CTA ═════════════════════════════════════════════════ */
+.cta-wrap { margin: 64px 2.5vw 0; }
+.cta-card { border-radius: var(--radius-card); padding: 84px 6% 88px; text-align: center; position: relative; overflow: hidden; background: linear-gradient(135deg, var(--hg-secondary) 0%, var(--hg-dominant) 55%, #333c82 100%); }
+.cta-card::after { content: ''; position: absolute; width: 520px; height: 520px; bottom: -220px; right: -140px; background: radial-gradient(circle, rgba(255,97,107,0.32) 0%, transparent 70%); filter: blur(50px); pointer-events: none; }
+.cta-content { position: relative; z-index: 1; }
+.cta-heading { font-size: clamp(28px, 4vw, 46px); font-weight: 800; letter-spacing: -0.025em; line-height: 1.12; margin-bottom: 20px; text-wrap: balance; }
+.cta-body { font-size: 16px; line-height: 1.7; color: var(--text-2); max-width: 560px; margin: 0 auto 36px; text-wrap: pretty; }
+.cta-fineprint { font-size: 13px; color: var(--text-3); margin-top: 20px; }
+
+/* ═══ FOOTER ═════════════════════════════════════════════════════ */
+.site-footer { margin: 60px 2.5vw 0; padding: 48px 2.5vw 36px; background: var(--hg-secondary); border-top: 1px solid rgba(255,255,255,0.08); position: relative; z-index: 1; }
+.footer-top { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; max-width: 1180px; margin: 0 auto 28px; }
+.footer-logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 16px; }
+.footer-social { display: flex; gap: 14px; }
+.footer-social a { width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.16); display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; }
+.footer-social a:hover { background: var(--hg-accent); border-color: var(--hg-accent); }
+.footer-social svg { width: 16px; height: 16px; fill: var(--text-1); }
+.footer-links { display: flex; flex-wrap: wrap; gap: 26px; max-width: 1180px; margin: 0 auto 24px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 24px; }
+.footer-links a { font-size: 13.5px; color: var(--text-2); font-weight: 600; }
+.footer-links a:hover { color: var(--text-1); }
+.footer-copy { max-width: 1180px; margin: 0 auto; font-size: 12.5px; color: var(--text-3); }
+
+/* ═══ SCROLL-REVEAL ══════════════════════════════════════════════ */
+.cap-card, .js-reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.6s ease-out, transform 0.4s ease-out, border-color 0.25s ease-out, box-shadow 0.25s ease-out, background 0.25s ease-out; }
+.cap-card.cap-card--visible, .js-reveal.js-reveal--visible { opacity: 1; transform: translateY(0); }
+@media (prefers-reduced-motion: reduce) { .cap-card, .js-reveal { opacity: 1; transform: none; transition: none; } }
+
+</style>
+</head>
+<body>
+
+<div class="page-bg" aria-hidden="true">
+  <div class="bloom bloom--left"></div>
+  <div class="bloom bloom--right"></div>
+</div>
+
+<div class="nav-outer">
+  <a href="index.html" class="nav-brand">
+    <span class="nav-brand-mark" aria-hidden="true"><span></span></span>
+    <span class="nav-brand-word">Health<b>Generation</b></span>
+  </a>
+  <nav class="site-nav" aria-label="Main navigation">
+    <ul class="nav-links">
+      <li><a href="index.html" class="is-active">Home</a></li>
+      <li><a href="capabilities.html">Capabilities</a></li>
+      <li><a href="case-studies.html">Case Studies</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <a href="contact.html" class="nav-cta">Talk to Our Team</a>
+    <button class="nav-hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="nav-drawer"><span></span></button>
+  </nav>
+</div>
+
+<div class="nav-drawer" id="nav-drawer" role="dialog" aria-label="Navigation menu">
+  <a href="index.html">Home</a>
+  <a href="capabilities.html">Capabilities</a>
+  <a href="case-studies.html">Case Studies</a>
+  <a href="contact.html">Contact</a>
+  <a href="contact.html" class="nav-drawer-cta">Talk to Our Team</a>
+</div>
+
+<main>
+
+<!-- ═══ HERO ═══════════════════════════════════════════════════════ -->
+<section class="hero-wrap" aria-label="Hero">
+  <div class="hero-card">
+    <span class="hero-badge">Australia-wide · Aged care specialist</span>
+    <h1 class="hero-heading">Better care. <span class="accent">Stronger providers.</span></h1>
+    <p class="hero-sub">Health Generation brings clinical, operational, workforce, funding and technology capability together under one partner — so aged care providers can navigate pressure, lift quality and build lasting strength.</p>
+
+    <div class="hero-words" aria-label="Our capability areas">
+      <span class="hero-word">Clinical</span>
+      <span class="hero-words-sep">&bull;</span>
+      <span class="hero-word">Operational</span>
+      <span class="hero-words-sep">&bull;</span>
+      <span class="hero-word">Workforce</span>
+      <span class="hero-words-sep">&bull;</span>
+      <span class="hero-word">Funding</span>
+      <span class="hero-words-sep">&bull;</span>
+      <span class="hero-word">Technology</span>
+    </div>
+    <p class="hero-tagline">One partner. Connected capability.</p>
+
+    <div class="hero-actions">
+      <a href="contact.html" class="btn btn-primary">
+        Tell Us What's Happening
+        <span class="btn-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </a>
+      <a href="capabilities.html" class="btn btn-secondary">
+        See Our Capabilities
+        <span class="btn-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PROOF BAND ═════════════════════════════════════════════════ -->
+<section class="proof-wrap" aria-label="Our scale">
+  <div class="proof-panel">
+    <div class="proof-grid">
+      <div class="proof-tile js-reveal" data-reveal-delay="0">
+        <div class="proof-num"><span class="accent">298+</span></div>
+        <div class="proof-label">Aged care providers supported</div>
+      </div>
+      <div class="proof-tile js-reveal" data-reveal-delay="60">
+        <div class="proof-num">280+</div>
+        <div class="proof-label">Governance &amp; quality reviews</div>
+      </div>
+      <div class="proof-tile js-reveal" data-reveal-delay="120">
+        <div class="proof-num">73+</div>
+        <div class="proof-label">Remediation programs</div>
+      </div>
+      <div class="proof-tile js-reveal" data-reveal-delay="180">
+        <div class="proof-num">30,900+</div>
+        <div class="proof-label">Older Person reviews</div>
+      </div>
+      <div class="proof-tile js-reveal" data-reveal-delay="240">
+        <div class="proof-num"><span class="accent">$138M+</span></div>
+        <div class="proof-label">Funding improvements identified</div>
+      </div>
+      <div class="proof-tile js-reveal" data-reveal-delay="300">
+        <div class="proof-num">Australia&#8209;wide</div>
+        <div class="proof-label">Provider support</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ START WITH THE PROBLEM ════════════════════════════════════ -->
+<section class="cap-section" aria-label="What are you trying to solve">
+  <div class="shell">
+    <div class="section-header center">
+      <span class="eyebrow">Start with the problem</span>
+      <h2 class="section-heading">What are you trying to solve?</h2>
+      <p class="section-sub">We don't lead with six service categories. Tell us what's happening, and we'll show you how Health Generation can help.</p>
+    </div>
+
+    <div class="cap-grid">
+      <a href="capabilities.html#quality" class="cap-card" data-cap-delay="0">
+        <div class="cap-icon-wrap" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v5c0 5-3.2 8.5-7 10-3.8-1.5-7-5-7-10V6l7-3z" stroke="#FF616B" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <p class="cap-card-heading">Worried about quality or compliance?</p>
+        <p class="cap-card-body">Get an independent view of clinical governance and quality systems before it becomes a regulatory finding.</p>
+        <span class="cap-card-link">Quality &amp; Clinical Governance <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </a>
+
+      <a href="capabilities.html#quality" class="cap-card" data-cap-delay="90">
+        <div class="cap-icon-wrap" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M6 4h9l3 3v13a1 1 0 01-1 1H6a1 1 0 01-1-1V5a1 1 0 011-1z" stroke="#FF616B" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 10h8M8 14h8M8 18h5" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <p class="cap-card-heading">Care planning not where it needs to be?</p>
+        <p class="cap-card-body">Lift care planning practice and documentation so it reflects the care actually being delivered.</p>
+        <span class="cap-card-link">Quality &amp; Clinical Governance <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </a>
+
+      <a href="capabilities.html#remediation" class="cap-card" data-cap-delay="180">
+        <div class="cap-icon-wrap" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M20 12a8 8 0 10-2.6 5.9" stroke="#FF616B" stroke-width="1.6" stroke-linecap="round"/><path d="M20 6v5h-5" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <p class="cap-card-heading">Service under pressure?</p>
+        <p class="cap-card-body">Stabilise a service under regulatory, operational or reputational pressure and build a credible path forward.</p>
+        <span class="cap-card-link">Remediation &amp; Transformation <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </a>
+
+      <a href="capabilities.html#workforce" class="cap-card" data-cap-delay="270">
+        <div class="cap-icon-wrap" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3" stroke="#FF616B" stroke-width="1.6"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><circle cx="17" cy="8" r="2.3" stroke="#FF616B" stroke-width="1.4"/><path d="M15.5 14.2c2.6.3 4.5 2.4 4.5 5.1" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+        <p class="cap-card-heading">Need experienced people quickly?</p>
+        <p class="cap-card-body">Deploy experienced clinical and operational leaders into gaps that can't wait for a standard recruitment cycle.</p>
+        <span class="cap-card-link">Workforce &amp; Capability <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </a>
+
+      <a href="capabilities.html#funding" class="cap-card" data-cap-delay="0">
+        <div class="cap-icon-wrap" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 3v18M8 7.5c0-1.5 1.8-2.5 4-2.5s4 1 4 2.5-1.8 2.5-4 2.5-4 1-4 2.5 1.8 2.5 4 2.5 4-1 4-2.5" stroke="#FF616B" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+        <p class="cap-card-heading">Funding not reflecting resident needs?</p>
+        <p class="cap-card-body">Align funding assessment and documentation with the actual acuity and needs of residents.</p>
+        <span class="cap-card-link">Funding &amp; Sustainability <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </a>
+
+      <a href="capabilities.html#quality" class="cap-card" data-cap-delay="90">
+        <div class="cap-icon-wrap" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="6.5" stroke="#FF616B" stroke-width="1.6"/><path d="M20 20l-4.3-4.3" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+        <p class="cap-card-heading">Preparing for an audit or review?</p>
+        <p class="cap-card-body">Get audit-ready with an honest, independent assessment well before the regulator arrives.</p>
+        <span class="cap-card-link">Quality &amp; Clinical Governance <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </a>
+
+      <a href="capabilities.html#technology" class="cap-card" data-cap-delay="180">
+        <div class="cap-icon-wrap" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="3" stroke="#FF616B" stroke-width="1.6"/><path d="M9 9h6v6H9z" stroke="#fff" stroke-width="1.5"/></svg></div>
+        <p class="cap-card-heading">Need better visibility of care and risk?</p>
+        <p class="cap-card-body">See quality, risk and performance signals across your service before they become incidents.</p>
+        <span class="cap-card-link">Care Intelligence &amp; Technology <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </a>
+
+      <a href="capabilities.html#commissioning" class="cap-card" data-cap-delay="270">
+        <div class="cap-icon-wrap" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 21V9l8-5 8 5v12" stroke="#FF616B" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 21v-6h6v6" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+        <p class="cap-card-heading">Acquiring or establishing a service?</p>
+        <p class="cap-card-body">Due diligence, mobilisation and commissioning support for new or acquired aged care services.</p>
+        <span class="cap-card-link">Commissioning &amp; New Services <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CONNECTED CAPABILITY ═══════════════════════════════════════ -->
+<section class="cap-section" aria-label="Connected capability">
+  <div class="shell">
+    <div class="panel">
+      <div class="section-header center">
+        <span class="eyebrow js-reveal" data-reveal-delay="0">One partner</span>
+        <h2 class="section-heading js-reveal" data-reveal-delay="80">We assemble the capability around the problem.</h2>
+        <p class="section-sub js-reveal" data-reveal-delay="160">Not every client needs everything. Health Generation has the breadth to connect the right pieces — and the depth to actually deliver them.</p>
+      </div>
+      <div class="journey-row">
+        <span class="journey-step js-reveal" data-reveal-delay="0">Clinical</span>
+        <span class="journey-step js-reveal" data-reveal-delay="40">Operational</span>
+        <span class="journey-step js-reveal" data-reveal-delay="80">Workforce</span>
+        <span class="journey-step js-reveal" data-reveal-delay="120">Funding</span>
+        <span class="journey-step js-reveal" data-reveal-delay="160">Technology</span>
+        <span class="journey-step js-reveal" data-reveal-delay="200">Implementation</span>
+        <span class="journey-step is-last js-reveal" data-reveal-delay="240">Assurance</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ THE HG MODEL ════════════════════════════════════════════════ -->
+<section class="cap-section" aria-label="The Health Generation model">
+  <div class="shell">
+    <div class="section-header center">
+      <span class="eyebrow">The HG model</span>
+      <h2 class="section-heading">HG stays with the problem.</h2>
+      <p class="section-sub">Traditional advisory stops at the report. Health Generation stays through implementation, capability-building and assurance.</p>
+    </div>
+
+    <div class="panel">
+      <div class="model-row is-traditional">
+        <span class="model-label">Traditional advisory</span>
+        <div class="model-step">Assess</div>
+        <div class="model-arrow" aria-hidden="true">&rarr;</div>
+        <div class="model-step">Recommend</div>
+        <div class="model-arrow" aria-hidden="true">&rarr;</div>
+        <div class="model-step">Report</div>
+        <div class="model-stop">Stops here</div>
+      </div>
+
+      <div class="model-row is-hg">
+        <span class="model-label">Health Generation</span>
+        <div class="model-step">Assess</div>
+        <div class="model-arrow" aria-hidden="true">&rarr;</div>
+        <div class="model-step">Diagnose</div>
+        <div class="model-arrow" aria-hidden="true">&rarr;</div>
+        <div class="model-step">Mobilise</div>
+        <div class="model-arrow" aria-hidden="true">&rarr;</div>
+        <div class="model-step">Implement</div>
+        <div class="model-arrow" aria-hidden="true">&rarr;</div>
+        <div class="model-step">Build Capability</div>
+        <div class="model-arrow" aria-hidden="true">&rarr;</div>
+        <div class="model-step">Measure</div>
+        <div class="model-arrow" aria-hidden="true">&rarr;</div>
+        <div class="model-step">Assure</div>
+      </div>
+
+      <p class="model-closing">HG doesn't hand over a report and leave. <span class="accent">We stay until it's fixed.</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CAPABILITY OVERVIEW ════════════════════════════════════════ -->
+<section class="cap-section" aria-label="Our capability areas">
+  <div class="shell">
+    <div class="section-header center">
+      <span class="eyebrow">Capability areas</span>
+      <h2 class="section-heading">Six capability areas. One connected partner.</h2>
+      <p class="section-sub">Each area stands on its own. Together, they mean Health Generation can follow a problem wherever it leads.</p>
+    </div>
+
+    <div class="cap-grid cap-grid--3">
+      <a href="capabilities.html#quality" class="cap-card" data-cap-delay="0">
+        <div class="cap-icon-wrap" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v5c0 5-3.2 8.5-7 10-3.8-1.5-7-5-7-10V6l7-3z" stroke="#FF616B" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+        <p class="cap-card-tag">01</p>
+        <p class="cap-card-heading">Quality &amp; Clinical Governance</p>
+        <p class="cap-card-body">Clinical governance frameworks, quality systems and compliance readiness that hold up under scrutiny.</p>
+      </a>
+      <a href="capabilities.html#remediation" class="cap-card" data-cap-delay="90">
+        <div class="cap-icon-wrap" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M20 12a8 8 0 10-2.6 5.9" stroke="#FF616B" stroke-width="1.6" stroke-linecap="round"/><path d="M20 6v5h-5" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <p class="cap-card-tag">02</p>
+        <p class="cap-card-heading">Remediation &amp; Transformation</p>
+        <p class="cap-card-body">Turning around services under regulatory or performance pressure, with sustained improvement, not a quick fix.</p>
+      </a>
+      <a href="capabilities.html#funding" class="cap-card" data-cap-delay="180">
+        <div class="cap-icon-wrap" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 3v18M8 7.5c0-1.5 1.8-2.5 4-2.5s4 1 4 2.5-1.8 2.5-4 2.5-4 1-4 2.5 1.8 2.5 4 2.5 4-1 4-2.5" stroke="#FF616B" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+        <p class="cap-card-tag">03</p>
+        <p class="cap-card-heading">Funding &amp; Sustainability</p>
+        <p class="cap-card-body">Funding models and financial sustainability planning that reflect the true cost and needs of care.</p>
+      </a>
+      <a href="capabilities.html#workforce" class="cap-card" data-cap-delay="0">
+        <div class="cap-icon-wrap" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3" stroke="#FF616B" stroke-width="1.6"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+        <p class="cap-card-tag">04</p>
+        <p class="cap-card-heading">Workforce &amp; Capability</p>
+        <p class="cap-card-body">Workforce planning, experienced people and education that builds lasting capability in your teams.</p>
+      </a>
+      <a href="capabilities.html#technology" class="cap-card" data-cap-delay="90">
+        <div class="cap-icon-wrap" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="3" stroke="#FF616B" stroke-width="1.6"/><path d="M9 9h6v6H9z" stroke="#fff" stroke-width="1.5"/></svg></div>
+        <p class="cap-card-tag">05</p>
+        <p class="cap-card-heading">Care Intelligence &amp; Technology</p>
+        <p class="cap-card-body">Data and digital tools that give providers real visibility of care quality and risk.</p>
+      </a>
+      <a href="capabilities.html#commissioning" class="cap-card" data-cap-delay="180">
+        <div class="cap-icon-wrap" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 21V9l8-5 8 5v12" stroke="#FF616B" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 21v-6h6v6" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+        <p class="cap-card-tag">06</p>
+        <p class="cap-card-heading">Commissioning &amp; New Services</p>
+        <p class="cap-card-body">Due diligence, mobilisation and commissioning support for new or acquired services.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ ONE PROBLEM, CONNECTED RESPONSE ════════════════════════════ -->
+<section class="cap-section" aria-label="How one problem connects across HG">
+  <div class="shell">
+    <div class="panel">
+      <div class="section-header center">
+        <span class="eyebrow js-reveal" data-reveal-delay="0">Connected capability, in practice</span>
+        <h2 class="section-heading js-reveal" data-reveal-delay="80">One problem can move across several parts of HG.</h2>
+        <p class="section-sub js-reveal" data-reveal-delay="160">A single clinical review rarely stays a clinical issue. Here's how it can unfold.</p>
+      </div>
+      <div class="journey-row">
+        <span class="journey-step js-reveal" data-reveal-delay="0">Clinical Review</span>
+        <span class="journey-arrow" aria-hidden="true">&darr;</span>
+        <span class="journey-step js-reveal" data-reveal-delay="40">Care Planning Gap</span>
+        <span class="journey-arrow" aria-hidden="true">&darr;</span>
+        <span class="journey-step js-reveal" data-reveal-delay="80">Workforce Capability</span>
+        <span class="journey-arrow" aria-hidden="true">&darr;</span>
+        <span class="journey-step js-reveal" data-reveal-delay="120">Education</span>
+        <span class="journey-arrow" aria-hidden="true">&darr;</span>
+        <span class="journey-step js-reveal" data-reveal-delay="160">Funding Opportunity</span>
+        <span class="journey-arrow" aria-hidden="true">&darr;</span>
+        <span class="journey-step js-reveal" data-reveal-delay="200">Implementation</span>
+        <span class="journey-arrow" aria-hidden="true">&darr;</span>
+        <span class="journey-step is-last js-reveal" data-reveal-delay="240">Assurance</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CASE STUDIES PREVIEW ═══════════════════════════════════════ -->
+<section class="cap-section" aria-label="Case studies">
+  <div class="shell">
+    <div class="section-header center">
+      <span class="eyebrow">Proof, not just promises</span>
+      <h2 class="section-heading">HG has done this before.</h2>
+      <p class="section-sub">A look at the kind of work we do. Full case studies, including verified detail, are being added as they're cleared for publication.</p>
+    </div>
+
+    <div class="cap-grid cap-grid--3">
+      <div class="case-card js-reveal" data-reveal-delay="0">
+        <span class="case-tag">Placeholder — pending real case study</span>
+        <div class="case-block"><b>The Challenge</b><p>[Describe the provider type, scale and the problem they were facing.]</p></div>
+        <div class="case-block"><b>The HG Response</b><p>[Describe which capabilities HG brought together.]</p></div>
+        <div class="case-block"><b>The Outcome</b><p>[Describe what changed, with real figures once available.]</p></div>
+      </div>
+      <div class="case-card js-reveal" data-reveal-delay="90">
+        <span class="case-tag">Placeholder — pending real case study</span>
+        <div class="case-block"><b>The Challenge</b><p>[Describe the provider type, scale and the problem they were facing.]</p></div>
+        <div class="case-block"><b>The HG Response</b><p>[Describe which capabilities HG brought together.]</p></div>
+        <div class="case-block"><b>The Outcome</b><p>[Describe what changed, with real figures once available.]</p></div>
+      </div>
+      <div class="case-card js-reveal" data-reveal-delay="180">
+        <span class="case-tag">Placeholder — pending real case study</span>
+        <div class="case-block"><b>The Challenge</b><p>[Describe the provider type, scale and the problem they were facing.]</p></div>
+        <div class="case-block"><b>The HG Response</b><p>[Describe which capabilities HG brought together.]</p></div>
+        <div class="case-block"><b>The Outcome</b><p>[Describe what changed, with real figures once available.]</p></div>
+      </div>
+    </div>
+    <div style="text-align:center; margin-top:36px;">
+      <a href="case-studies.html" class="btn btn-secondary">See All Case Studies
+        <span class="btn-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FINAL CTA ═══════════════════════════════════════════════════ -->
+<section class="cta-wrap" id="contact" aria-label="Call to action">
+  <div class="cta-card">
+    <div class="cta-content">
+      <span class="eyebrow">Start the conversation</span>
+      <h2 class="cta-heading">Tell us what's happening.</h2>
+      <p class="cta-body">You don't need to know which HG capability you need. Tell us what's going on in your organisation, and we'll show you how we can help.</p>
+      <a href="contact.html" class="btn btn-primary">
+        Tell Us What's Happening
+        <span class="btn-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </a>
+      <p class="cta-fineprint">Australia-wide aged care specialist support.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer" aria-label="Site footer">
+  <div class="footer-top">
+    <a href="index.html" class="footer-logo">
+      <span class="nav-brand-mark" aria-hidden="true"><span></span></span>
+      Health<b style="color:var(--hg-accent)">Generation</b>
+    </a>
+    <div class="footer-social">
+      <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+      <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97h-1.513c-1.491 0-1.956.93-1.956 1.886v2.267h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg></a>
+      <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
+    </div>
+  </div>
+  <ul class="footer-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="capabilities.html">Capabilities</a></li>
+    <li><a href="case-studies.html">Case Studies</a></li>
+    <li><a href="contact.html">Contact</a></li>
+    <li><a href="#">Privacy</a></li>
+  </ul>
+  <p class="footer-copy">&copy; 2026 Health Generation. All rights reserved.</p>
+</footer>
+
+<!-- Nav hamburger toggle -->
+<script>
+(function () {
+  var btn    = document.querySelector('.nav-hamburger');
+  var drawer = document.getElementById('nav-drawer');
+  if (!btn || !drawer) return;
+  function openMenu() { drawer.classList.add('is-open'); btn.classList.add('is-open'); btn.setAttribute('aria-expanded','true'); btn.setAttribute('aria-label','Close menu'); document.body.style.overflow = 'hidden'; }
+  function closeMenu() { drawer.classList.remove('is-open'); btn.classList.remove('is-open'); btn.setAttribute('aria-expanded','false'); btn.setAttribute('aria-label','Open menu'); document.body.style.overflow = ''; }
+  btn.addEventListener('click', function () { drawer.classList.contains('is-open') ? closeMenu() : openMenu(); });
+  drawer.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', closeMenu); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeMenu(); });
+})();
+</script>
+
+<!-- Nav scroll background -->
+<script>
+(function () {
+  var navOuter = document.querySelector('.nav-outer');
+  if (!navOuter) return;
+  function update() { navOuter.classList.toggle('is-scrolled', window.scrollY > 10); }
+  window.addEventListener('scroll', update, { passive: true });
+  update();
+})();
+</script>
+
+<!-- Scroll entrance animations -->
+<script>
+(function () {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var capCards = document.querySelectorAll('.cap-card');
+  if (capCards.length) {
+    var capObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        var card = entry.target;
+        if (entry.isIntersecting) {
+          var delay = parseFloat(card.dataset.capDelay) || 0;
+          setTimeout(function () { card.classList.add('cap-card--visible'); }, delay);
+        } else { card.classList.remove('cap-card--visible'); }
+      });
+    }, { threshold: 0.15 });
+    capCards.forEach(function (card, i) { if (!card.dataset.capDelay) card.dataset.capDelay = (i % 4) * 90; capObserver.observe(card); });
+  }
+  var reveals = document.querySelectorAll('.js-reveal');
+  if (reveals.length) {
+    var revealObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        var el = entry.target;
+        if (entry.isIntersecting) {
+          var delay = parseFloat(el.dataset.revealDelay) || 0;
+          setTimeout(function () { el.classList.add('js-reveal--visible'); }, delay);
+        } else { el.classList.remove('js-reveal--visible'); }
+      });
+    }, { threshold: 0.15 });
+    reveals.forEach(function (el) { revealObserver.observe(el); });
+  }
+})();
+</script>
+
+</body>
+</html>
