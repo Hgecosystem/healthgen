@@ -188,7 +188,8 @@ section { position: relative; }
 /* ═══ HERO ══════════════════════════════════════════════════════ */
 .hero-wrap { margin: 0; }
 .hero-card { position: relative; overflow: hidden; padding: 156px 6% 84px; text-align: center; background: linear-gradient(135deg, #252d64 0%, #333a74 30%, #55507f 55%, #7f5e91 78%, #8c5f83 100%); --text-1: var(--text-1-dark); --text-2: var(--text-2-dark); --text-3: var(--text-3-dark); color: var(--text-1); }
-.hero-badge { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; color: var(--text-1); background: rgba(255,255,255,0.06); border: 1px solid rgba(255,97,107,0.55); padding: 6px 16px; border-radius: 100px; margin-bottom: 22px; }
+.hero-badge { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-1); background: rgba(255,255,255,0.06); border: 1px solid rgba(255,97,107,0.55); padding: 6px 16px; border-radius: 100px; margin-bottom: 22px; }
+.hero-badge .dot { color: var(--hg-accent); }
 .hero-heading { font-size: clamp(28px, 4vw, 50px); font-weight: 800; letter-spacing: -0.025em; line-height: 1.12; margin-bottom: 18px; text-wrap: balance; }
 .hero-heading .accent { color: var(--hg-accent); }
 .hero-sub { font-size: 17px; font-weight: 400; line-height: 1.65; color: var(--text-2); max-width: 480px; margin: 0 auto 20px; text-wrap: pretty; }
@@ -327,7 +328,7 @@ section { position: relative; }
 <!-- ═══ HERO ═══════════════════════════════════════════════════════ -->
 <section class="hero-wrap" aria-label="Hero">
   <div class="hero-card">
-    <span class="hero-badge">Australia-wide · Aged care specialist</span>
+    <span class="hero-badge">Australia-wide <span class="dot">·</span> Aged care specialist</span>
     <h1 class="hero-heading">Better care. <span class="accent">Stronger providers.</span></h1>
     <p class="hero-sub">Health Generation brings clinical, operational, workforce, funding and technology capability together under one partner — so aged care providers can navigate pressure, lift quality and build lasting strength.</p>
 
