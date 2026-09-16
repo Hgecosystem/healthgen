@@ -61,7 +61,7 @@ img { max-width: 100%; display: block; }
 .nav-outer {
   position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
   z-index: 100; display: inline-flex; align-items: center; gap: 16px;
-  max-width: calc(100vw - 32px);
+  width: max-content; max-width: calc(100vw - 32px);
   transition: background 0.3s ease, padding 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
   border-radius: 40px;
   --text-1: var(--text-1-dark); --text-2: var(--text-2-dark); --text-3: var(--text-3-dark); color: var(--text-1);
@@ -73,6 +73,10 @@ img { max-width: 100%; display: block; }
   padding: 28px 20px;
   backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px);
   box-shadow: 0 4px 30px rgba(0,0,0,0.25);
+}
+.nav-outer.is-scrolled .site-nav {
+  background: rgba(51,60,130,0.65);
+  border-color: rgba(255,255,255,0.16);
 }
 .nav-brand { display: inline-flex; align-items: center; flex-shrink: 0; }
 .brand-logo-img { height: 50px; width: auto; display: block; flex-shrink: 0; }
