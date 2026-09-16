@@ -187,7 +187,7 @@ section { position: relative; }
 .section-heading { font-size: clamp(26px, 3.4vw, 42px); font-weight: 800; letter-spacing: -0.025em; line-height: 1.15; margin-bottom: 16px; text-wrap: balance; }
 .section-sub { font-size: 16px; line-height: 1.7; color: var(--text-2); max-width: 680px; text-wrap: pretty; }
 .section-header { margin-bottom: 44px; }
-.section-header.center { text-align: center; margin-left: auto; margin-right: auto; }
+.section-header.center { text-align: center; max-width: 720px; margin-left: auto; margin-right: auto; }
 .section-header.center .section-sub { margin-left: auto; margin-right: auto; }
 
 /* ═══ HERO ══════════════════════════════════════════════════════ */
@@ -469,78 +469,73 @@ section { position: relative; }
 
 <!-- ═══ CONNECTED CAPABILITY ═══════════════════════════════════════ -->
 <section class="cap-section" aria-label="Connected capability">
-  <div class="shell">
-    <div class="panel">
-      <div class="section-header center">
-        <span class="eyebrow js-reveal" data-reveal-delay="0">One partner</span>
-        <h2 class="section-heading js-reveal" data-reveal-delay="80">We assemble the capability around the problem.</h2>
-        <p class="section-sub js-reveal" data-reveal-delay="160">Not every client needs everything. Health Generation has the breadth to connect the right pieces — and the depth to actually deliver them.</p>
-      </div>
-      <div class="journey-row">
-        <span class="journey-step js-reveal" data-reveal-delay="0">Clinical</span>
-        <span class="journey-step js-reveal" data-reveal-delay="40">Operational</span>
-        <span class="journey-step js-reveal" data-reveal-delay="80">Workforce</span>
-        <span class="journey-step js-reveal" data-reveal-delay="120">Funding</span>
-        <span class="journey-step js-reveal" data-reveal-delay="160">Technology</span>
-        <span class="journey-step js-reveal" data-reveal-delay="200">Implementation</span>
-        <span class="journey-step is-last js-reveal" data-reveal-delay="240">Assurance</span>
-      </div>
+  <div class="panel">
+    <div class="section-header center">
+      <span class="eyebrow js-reveal" data-reveal-delay="0">One partner</span>
+      <h2 class="section-heading js-reveal" data-reveal-delay="80">We assemble the capability around the problem.</h2>
+      <p class="section-sub js-reveal" data-reveal-delay="160">Not every client needs everything. Health Generation has the breadth to connect the right pieces — and the depth to actually deliver them.</p>
+    </div>
+    <div class="journey-row">
+      <span class="journey-step js-reveal" data-reveal-delay="0">Clinical</span>
+      <span class="journey-step js-reveal" data-reveal-delay="40">Operational</span>
+      <span class="journey-step js-reveal" data-reveal-delay="80">Workforce</span>
+      <span class="journey-step js-reveal" data-reveal-delay="120">Funding</span>
+      <span class="journey-step js-reveal" data-reveal-delay="160">Technology</span>
+      <span class="journey-step js-reveal" data-reveal-delay="200">Implementation</span>
+      <span class="journey-step is-last js-reveal" data-reveal-delay="240">Assurance</span>
     </div>
   </div>
 </section>
 
 <!-- ═══ THE HG MODEL ════════════════════════════════════════════════ -->
 <section class="cap-section" aria-label="The Health Generation model">
-  <div class="shell">
-    <div class="section-header center">
-      <span class="eyebrow">The HG model</span>
-      <h2 class="section-heading">HG stays with the problem.</h2>
-      <p class="section-sub">Traditional advisory stops at the report. Health Generation stays through implementation, capability-building and assurance.</p>
+  <div class="section-header center">
+    <span class="eyebrow">The HG model</span>
+    <h2 class="section-heading">HG stays with the problem.</h2>
+    <p class="section-sub">Traditional advisory stops at the report. Health Generation stays through implementation, capability-building and assurance.</p>
+  </div>
+
+  <div class="panel">
+    <div class="model-row is-traditional">
+      <span class="model-label">Traditional advisory</span>
+      <div class="model-step">Assess</div>
+      <div class="model-arrow" aria-hidden="true">&rarr;</div>
+      <div class="model-step">Recommend</div>
+      <div class="model-arrow" aria-hidden="true">&rarr;</div>
+      <div class="model-step">Report</div>
+      <div class="model-stop">Stops here</div>
     </div>
 
-    <div class="panel">
-      <div class="model-row is-traditional">
-        <span class="model-label">Traditional advisory</span>
-        <div class="model-step">Assess</div>
-        <div class="model-arrow" aria-hidden="true">&rarr;</div>
-        <div class="model-step">Recommend</div>
-        <div class="model-arrow" aria-hidden="true">&rarr;</div>
-        <div class="model-step">Report</div>
-        <div class="model-stop">Stops here</div>
-      </div>
-
-      <div class="model-row is-hg">
-        <span class="model-label">Health Generation</span>
-        <div class="model-step">Assess</div>
-        <div class="model-arrow" aria-hidden="true">&rarr;</div>
-        <div class="model-step">Diagnose</div>
-        <div class="model-arrow" aria-hidden="true">&rarr;</div>
-        <div class="model-step">Mobilise</div>
-        <div class="model-arrow" aria-hidden="true">&rarr;</div>
-        <div class="model-step">Implement</div>
-        <div class="model-arrow" aria-hidden="true">&rarr;</div>
-        <div class="model-step">Build Capability</div>
-        <div class="model-arrow" aria-hidden="true">&rarr;</div>
-        <div class="model-step">Measure</div>
-        <div class="model-arrow" aria-hidden="true">&rarr;</div>
-        <div class="model-step">Assure</div>
-      </div>
-
-      <p class="model-closing">HG doesn't hand over a report and leave. <span class="accent">We stay until it's fixed.</span></p>
+    <div class="model-row is-hg">
+      <span class="model-label">Health Generation</span>
+      <div class="model-step">Assess</div>
+      <div class="model-arrow" aria-hidden="true">&rarr;</div>
+      <div class="model-step">Diagnose</div>
+      <div class="model-arrow" aria-hidden="true">&rarr;</div>
+      <div class="model-step">Mobilise</div>
+      <div class="model-arrow" aria-hidden="true">&rarr;</div>
+      <div class="model-step">Implement</div>
+      <div class="model-arrow" aria-hidden="true">&rarr;</div>
+      <div class="model-step">Build Capability</div>
+      <div class="model-arrow" aria-hidden="true">&rarr;</div>
+      <div class="model-step">Measure</div>
+      <div class="model-arrow" aria-hidden="true">&rarr;</div>
+      <div class="model-step">Assure</div>
     </div>
+
+    <p class="model-closing">HG doesn't hand over a report and leave. <span class="accent">We stay until it's fixed.</span></p>
   </div>
 </section>
 
 <!-- ═══ CAPABILITY OVERVIEW ════════════════════════════════════════ -->
 <section class="cap-section" aria-label="Our capability areas">
-  <div class="shell">
-    <div class="section-header center">
-      <span class="eyebrow">Capability areas</span>
-      <h2 class="section-heading">Six capability areas. One connected partner.</h2>
-      <p class="section-sub">Each area stands on its own. Together, they mean Health Generation can follow a problem wherever it leads.</p>
-    </div>
+  <div class="section-header center">
+    <span class="eyebrow">Capability areas</span>
+    <h2 class="section-heading">Six capability areas. One connected partner.</h2>
+    <p class="section-sub">Each area stands on its own. Together, they mean Health Generation can follow a problem wherever it leads.</p>
+  </div>
 
-    <div class="cap-grid cap-grid--3">
+  <div class="cap-grid cap-grid--3">
       <a href="capabilities.html#quality" class="cap-card" data-cap-delay="0">
         <div class="cap-icon-wrap" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v5c0 5-3.2 8.5-7 10-3.8-1.5-7-5-7-10V6l7-3z" stroke="#B8CDF3" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
         <p class="cap-card-tag">01</p>
@@ -578,47 +573,43 @@ section { position: relative; }
         <p class="cap-card-body">Due diligence, mobilisation and commissioning support for new or acquired services.</p>
       </a>
     </div>
-  </div>
 </section>
 
 <!-- ═══ ONE PROBLEM, CONNECTED RESPONSE ════════════════════════════ -->
 <section class="cap-section" aria-label="How one problem connects across HG">
-  <div class="shell">
-    <div class="panel">
-      <div class="section-header center">
-        <span class="eyebrow js-reveal" data-reveal-delay="0">Connected capability, in practice</span>
-        <h2 class="section-heading js-reveal" data-reveal-delay="80">One problem can move across several parts of HG.</h2>
-        <p class="section-sub js-reveal" data-reveal-delay="160">A single clinical review rarely stays a clinical issue. Here's how it can unfold.</p>
-      </div>
-      <div class="journey-row">
-        <span class="journey-step js-reveal" data-reveal-delay="0">Clinical Review</span>
-        <span class="journey-arrow" aria-hidden="true">&darr;</span>
-        <span class="journey-step js-reveal" data-reveal-delay="40">Care Planning Gap</span>
-        <span class="journey-arrow" aria-hidden="true">&darr;</span>
-        <span class="journey-step js-reveal" data-reveal-delay="80">Workforce Capability</span>
-        <span class="journey-arrow" aria-hidden="true">&darr;</span>
-        <span class="journey-step js-reveal" data-reveal-delay="120">Education</span>
-        <span class="journey-arrow" aria-hidden="true">&darr;</span>
-        <span class="journey-step js-reveal" data-reveal-delay="160">Funding Opportunity</span>
-        <span class="journey-arrow" aria-hidden="true">&darr;</span>
-        <span class="journey-step js-reveal" data-reveal-delay="200">Implementation</span>
-        <span class="journey-arrow" aria-hidden="true">&darr;</span>
-        <span class="journey-step is-last js-reveal" data-reveal-delay="240">Assurance</span>
-      </div>
+  <div class="panel">
+    <div class="section-header center">
+      <span class="eyebrow js-reveal" data-reveal-delay="0">Connected capability, in practice</span>
+      <h2 class="section-heading js-reveal" data-reveal-delay="80">One problem can move across several parts of HG.</h2>
+      <p class="section-sub js-reveal" data-reveal-delay="160">A single clinical review rarely stays a clinical issue. Here's how it can unfold.</p>
+    </div>
+    <div class="journey-row">
+      <span class="journey-step js-reveal" data-reveal-delay="0">Clinical Review</span>
+      <span class="journey-arrow" aria-hidden="true">&darr;</span>
+      <span class="journey-step js-reveal" data-reveal-delay="40">Care Planning Gap</span>
+      <span class="journey-arrow" aria-hidden="true">&darr;</span>
+      <span class="journey-step js-reveal" data-reveal-delay="80">Workforce Capability</span>
+      <span class="journey-arrow" aria-hidden="true">&darr;</span>
+      <span class="journey-step js-reveal" data-reveal-delay="120">Education</span>
+      <span class="journey-arrow" aria-hidden="true">&darr;</span>
+      <span class="journey-step js-reveal" data-reveal-delay="160">Funding Opportunity</span>
+      <span class="journey-arrow" aria-hidden="true">&darr;</span>
+      <span class="journey-step js-reveal" data-reveal-delay="200">Implementation</span>
+      <span class="journey-arrow" aria-hidden="true">&darr;</span>
+      <span class="journey-step is-last js-reveal" data-reveal-delay="240">Assurance</span>
     </div>
   </div>
 </section>
 
 <!-- ═══ CASE STUDIES PREVIEW ═══════════════════════════════════════ -->
 <section class="cap-section" aria-label="Case studies">
-  <div class="shell">
-    <div class="section-header center">
-      <span class="eyebrow">Proof, not just promises</span>
-      <h2 class="section-heading">HG has done this before.</h2>
-      <p class="section-sub">A look at the kind of work we do. Full case studies, including verified detail, are being added as they're cleared for publication.</p>
-    </div>
+  <div class="section-header center">
+    <span class="eyebrow">Proof, not just promises</span>
+    <h2 class="section-heading">HG has done this before.</h2>
+    <p class="section-sub">A look at the kind of work we do. Full case studies, including verified detail, are being added as they're cleared for publication.</p>
+  </div>
 
-    <div class="cap-grid cap-grid--3">
+  <div class="cap-grid cap-grid--3">
       <div class="case-card js-reveal" data-reveal-delay="0">
         <span class="case-tag">Placeholder — pending real case study</span>
         <div class="case-block"><b>The Challenge</b><p>[Describe the provider type, scale and the problem they were facing.]</p></div>
@@ -638,11 +629,10 @@ section { position: relative; }
         <div class="case-block"><b>The Outcome</b><p>[Describe what changed, with real figures once available.]</p></div>
       </div>
     </div>
-    <div style="text-align:center; margin-top:36px;">
-      <a href="case-studies.html" class="btn btn-secondary">See All Case Studies
-        <span class="btn-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-      </a>
-    </div>
+  <div style="text-align:center; margin-top:36px;">
+    <a href="case-studies.html" class="btn btn-secondary">See All Case Studies
+      <span class="btn-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+    </a>
   </div>
 </section>
 
