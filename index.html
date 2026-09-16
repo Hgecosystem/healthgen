@@ -197,8 +197,8 @@ section { position: relative; }
 @media (min-width: 769px) { .hero-line-2 { white-space: nowrap; font-size: clamp(20px, 3.2vw, 50px); } }
 .hero-sub { font-size: clamp(15px, 1.3vw, 17px); font-weight: 400; line-height: 1.65; color: var(--text-2); max-width: 480px; margin: 0 auto 20px; text-wrap: pretty; }
 .hero-words { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 8px; margin: 28px 0 10px; }
-.hero-word { font-size: 12.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-1); background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); padding: 9px 16px; border-radius: 100px; }
-.hero-words-sep { display: flex; align-items: center; color: var(--hg-accent); font-weight: 700; }
+.hero-word { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-1); background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); padding: 9px 16px; border-radius: 100px; }
+.hero-word::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--hg-accent); flex: none; }
 .hero-tagline { font-size: 15px; font-weight: 700; letter-spacing: 0.02em; color: var(--text-1); margin: 22px 0 34px; }
 .hero-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; }
 
@@ -248,15 +248,18 @@ section { position: relative; }
 
 /* ═══ JOURNEY STEPS ═════════════════════════════════════════════ */
 .journey-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px; }
-.journey-step { padding: 12px 20px; border-radius: 100px; background: var(--surface-2); border: 1px solid var(--surface-2-border); font-size: 13.5px; font-weight: 700; color: var(--text-1); }
+.journey-step { display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 100px; background: var(--surface-2); border: 1px solid var(--surface-2-border); font-size: 12.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-1); }
+.journey-step::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--text-3); flex: none; }
 .journey-step.is-last { background: rgba(255,97,107,0.16); border-color: rgba(255,97,107,0.4); color: var(--hg-accent); }
+.journey-step.is-last::before { background: var(--hg-accent); }
 .journey-arrow { color: var(--text-3); flex: 0 0 auto; }
 @media (max-width: 700px) { .journey-row { flex-direction: column; } .journey-arrow { transform: rotate(90deg); } }
 
 /* ═══ CASE STUDY CARDS (preview) ════════════════════════════════ */
 .case-card { background: var(--surface-2); border: 1px solid var(--surface-2-border); border-radius: var(--radius-card); padding: 32px 28px 30px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 2px 12px var(--surface-shadow); transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease; }
 .case-card:hover { transform: translateY(-6px); border-color: var(--outline-soft-hover); box-shadow: 0 16px 36px rgba(35,45,110,0.12); }
-.case-tag { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); background: var(--chip-bg); border: 1px solid var(--outline-soft); padding: 5px 12px; border-radius: 100px; margin-bottom: 18px; }
+.case-tag { display: inline-flex; align-items: center; gap: 7px; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); background: var(--chip-bg); border: 1px solid var(--outline-soft); padding: 5px 12px; border-radius: 100px; margin-bottom: 18px; }
+.case-tag::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--text-3); flex: none; }
 .case-block { margin-bottom: 14px; }
 .case-block b { display: block; font-size: 11.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--hg-accent); margin-bottom: 4px; }
 .case-block p { font-size: 14.5px; line-height: 1.65; color: var(--text-2); }
@@ -341,13 +344,9 @@ section { position: relative; }
 
     <div class="hero-words" aria-label="Our capability areas">
       <span class="hero-word">Clinical</span>
-      <span class="hero-words-sep">&bull;</span>
       <span class="hero-word">Operational</span>
-      <span class="hero-words-sep">&bull;</span>
       <span class="hero-word">Workforce</span>
-      <span class="hero-words-sep">&bull;</span>
       <span class="hero-word">Funding</span>
-      <span class="hero-words-sep">&bull;</span>
       <span class="hero-word">Technology</span>
     </div>
     <p class="hero-tagline">One partner. Connected capability.</p>
