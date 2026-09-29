@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resources, Health Generation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+
+:root {
+  --color-dominant: #252D64;
+  --color-secondary: #131734;
+  --color-accent: #FF616B;
+  --color-blue-accent: #435DA9;
+  --color-light-blue: #B3CEF7;
+
+  --page-bg-base:  #f4f4f6;
+  --bloom-left-color:    #EF6A73;
+  --bloom-right-color:   #3546BC;
+  --bloom-left-opacity:  0.52;
+  --bloom-right-opacity: 0.46;
+
+  --text-1: #131734;
+  --text-2: #2d3566;
+  --text-3: #5e66a0;
+  --text-1-dark: rgba(255,255,255,0.95);
+  --text-2-dark: rgba(255,255,255,0.72);
+  --text-3-dark: rgba(255,255,255,0.52);
+
+  --surface-1: rgba(255,255,255,0.45);
+  --surface-1-border: rgba(255,255,255,0.75);
+  --surface-2: rgba(255,255,255,0.62);
+  --surface-2-border: rgba(255,255,255,0.7);
+  --surface-2-hover: rgba(255,255,255,0.8);
+  --surface-shadow: rgba(35,45,110,0.06);
+  --outline-soft: rgba(19,23,52,0.14);
+  --outline-soft-hover: rgba(19,23,52,0.26);
+  --chip-bg: rgba(19,23,52,0.045);
+
+  --radius-card: 25px;
+  --font: 'Manrope', system-ui, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--page-bg-base);
+  color: var(--text-1);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+img { max-width: 100%; display: block; }
+
+.page-bg { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+.bloom { position: absolute; width: 74vw; height: 130vh; top: -15vh; border-radius: 50%; filter: blur(130px); }
+.bloom--left { left: -28vw; background: radial-gradient(ellipse at 35% 35%, var(--bloom-left-color) 0%, transparent 68%); opacity: var(--bloom-left-opacity); }
+.bloom--right { right: -28vw; background: radial-gradient(ellipse at 65% 35%, var(--bloom-right-color) 0%, transparent 68%); opacity: var(--bloom-right-opacity); }
+.grain-overlay { position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: 0.05; mix-blend-mode: overlay; }
+.grain-overlay svg { width: 100%; height: 100%; display: block; }
+
+main { position: relative; z-index: 1; }
+section { position: relative; }
+
+/* ═══ NAV ═══ */
+.nav-outer { position: fixed; top: 16px; left: 50%; transform: translateX(-50%); z-index: 100; display: inline-flex; align-items: center; gap: 16px; max-width: calc(100vw - 32px); }
+.nav-brand { display: inline-flex; align-items: center; flex-shrink: 0; }
+.nav-brand-logo { height: 44px; width: auto; display: block; flex-shrink: 0; }
+.site-nav { background: var(--surface-1); border: 1px solid var(--surface-1-border); border-radius: 999px; padding: 0 6px 0 22px; height: 50px; display: inline-flex; align-items: center; gap: 2px; box-shadow: 0 2px 24px var(--surface-shadow); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); white-space: nowrap; }
+.nav-links { display: flex; align-items: center; gap: 2px; list-style: none; }
+.nav-links a { font-size: 13px; font-weight: 500; color: var(--text-2); padding: 5px 10px; border-radius: 999px; transition: color 0.18s, background 0.18s; }
+.nav-links a:hover, .nav-links a.is-current { color: var(--text-1); background: var(--chip-bg); }
+.nav-cta { font-size: 13px; font-weight: 700; color: #fff; background: var(--color-dominant); border-radius: 999px; padding: 8px 18px; white-space: nowrap; transition: background 0.18s, transform 0.18s; flex-shrink: 0; margin-left: 6px; }
+.nav-cta:hover { filter: brightness(1.15); transform: translateY(-1px); }
+.nav-hamburger { display: none; align-items: center; justify-content: center; width: 44px; height: 44px; background: var(--surface-1); border: 1px solid var(--surface-1-border); border-radius: 999px; cursor: pointer; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: 0 2px 24px var(--surface-shadow); flex-shrink: 0; }
+.nav-hamburger span { display: block; width: 18px; height: 1.5px; background: var(--text-1); border-radius: 2px; position: relative; transition: transform 0.25s ease, opacity 0.25s ease; }
+.nav-hamburger span::before, .nav-hamburger span::after { content: ''; display: block; width: 18px; height: 1.5px; background: var(--text-1); border-radius: 2px; position: absolute; left: 0; transition: transform 0.25s ease, opacity 0.25s ease; }
+.nav-hamburger span::before { top: -5px; }
+.nav-hamburger span::after  { top: 5px; }
+.nav-hamburger.is-open span { background: transparent; }
+.nav-hamburger.is-open span::before { transform: translateY(5px) rotate(45deg); }
+.nav-hamburger.is-open span::after  { transform: translateY(-5px) rotate(-45deg); }
+.nav-drawer { display: none; position: fixed; inset: 0; z-index: 99; padding-top: 90px; flex-direction: column; align-items: center; justify-content: flex-start; gap: 8px; background: var(--surface-1); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); opacity: 0; transform: translateY(-8px); transition: opacity 0.25s ease, transform 0.25s ease; pointer-events: none; }
+.nav-drawer.is-open { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.nav-drawer a { font-size: 18px; font-weight: 600; color: var(--text-1); padding: 14px 24px; width: 100%; text-align: center; border-radius: 12px; max-width: 320px; transition: background 0.15s; }
+.nav-drawer a:hover, .nav-drawer a.is-current { background: var(--chip-bg); }
+.nav-drawer .nav-drawer-cta { margin-top: 16px; background: var(--color-dominant); color: #fff; border-radius: 999px; }
+@media (max-width: 820px) {
+  .nav-outer { gap: 10px; }
+  .nav-links { display: none; }
+  .nav-cta { display: none; }
+  .nav-hamburger { display: inline-flex; }
+  .nav-drawer { display: flex; }
+}
+
+/* ═══ BUTTONS ═══ */
+.btn { display: inline-flex; align-items: center; justify-content: space-between; gap: 10px; border-radius: 100px; font-family: var(--font); font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.22s ease; white-space: nowrap; }
+.btn-primary { background: var(--color-accent); color: #fff; padding: 14.5px 21.5px 14.5px 29.5px; border: none; }
+.btn-primary:hover { background: #ff7a83; transform: translateY(-1px); box-shadow: 0 8px 28px rgba(255,97,107,0.35); }
+.btn-primary:hover .btn-icon { transform: translateX(4px); }
+.btn-icon { display: inline-flex; align-items: center; transition: transform 0.22s ease; flex-shrink: 0; }
+
+/* ═══ PAGE HERO (banner) ═══ */
+.page-hero { margin: 110px 2.5vw 0; }
+@media (max-width: 560px) { .page-hero { margin-top: 90px; } }
+.page-hero-card {
+  position: relative; overflow: hidden;
+  background: radial-gradient(ellipse farthest-corner at 0% 0% in oklch, #141732 0%, #272D60 30%, #444D90 58%, #B8CDF3 100%);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: var(--radius-card);
+  padding: 72px 7% 80px;
+  text-align: center;
+  --text-1: var(--text-1-dark); --text-2: var(--text-2-dark); --text-3: var(--text-3-dark);
+  color: var(--text-1);
+}
+.page-hero-card::before {
+  content: ''; position: absolute; width: 700px; height: 420px; top: -80px; left: 50%; transform: translateX(-50%);
+  background: radial-gradient(ellipse at center, rgba(68,77,144,0.35) 0%, transparent 68%);
+  filter: blur(40px); pointer-events: none;
+}
+.page-hero-card::after {
+  content: ''; position: absolute; width: 460px; height: 460px; bottom: -140px; right: -80px;
+  background: radial-gradient(circle, rgba(184,205,243,0.4) 0%, transparent 72%);
+  filter: blur(55px); pointer-events: none;
+}
+@media (max-width: 780px) { .page-hero-card { padding: 64px 6% 72px; } }
+.page-hero-badge { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-1); background: rgba(255,255,255,0.06); border: 1px solid rgba(255,97,107,0.45); border-radius: 100px; padding: 6px 16px; margin-bottom: 20px; }
+.page-hero-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--color-accent); flex: none; }
+.page-hero-heading { position: relative; z-index: 1; font-size: clamp(30px, 4.4vw, 48px); font-weight: 800; letter-spacing: -0.025em; line-height: 1.1; margin-bottom: 16px; text-wrap: balance; }
+.page-hero-sub { position: relative; z-index: 1; font-size: 16px; line-height: 1.7; color: var(--text-2); max-width: 620px; margin: 0 auto; text-wrap: pretty; }
+
+/* ═══ SECTION / CARD GRID (blog listing) ═══ */
+.cap-section { margin: 40px 2.5vw 0; }
+.cap-section--blog-grid { padding: 0 7%; }
+.cap-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+@media (max-width: 980px) { .cap-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px) { .cap-grid { grid-template-columns: 1fr; } }
+
+.blog-card { position: relative; display: flex; flex-direction: column; background: var(--surface-2); border: 1px solid var(--surface-2-border); border-radius: var(--radius-card); overflow: hidden; transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease; }
+.blog-card:hover { transform: translateY(-6px); border-color: color-mix(in srgb, var(--color-accent) 55%, transparent); box-shadow: 0 18px 40px rgba(0,0,0,0.18), 0 0 26px color-mix(in srgb, var(--color-accent) 22%, transparent); }
+@media (prefers-reduced-motion: reduce) { .blog-card:hover { transform: none; } }
+.blog-card-media { position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; background: linear-gradient(135deg, color-mix(in srgb, var(--color-dominant) 14%, transparent), color-mix(in srgb, var(--color-blue-accent) 18%, transparent)); display: flex; align-items: center; justify-content: center; }
+.blog-card-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.blog-card-media svg { opacity: 0.5; }
+.blog-card-media:has(img)::after { content: ""; position: absolute; inset: 0; background: var(--color-blue-accent); opacity: 0.55; pointer-events: none; }
+.blog-card-body { padding: 24px 24px 28px; display: flex; flex-direction: column; flex: 1; }
+.blog-card-cat { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-accent); margin-bottom: 10px; }
+.blog-card-title { font-size: 18px; font-weight: 700; color: var(--text-1); letter-spacing: -0.02em; line-height: 1.32; margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.blog-card-excerpt { font-size: 14px; line-height: 1.6; color: var(--text-2); flex: 1; margin-bottom: 16px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.blog-card-meta { font-size: 12.5px; color: var(--text-3); display: flex; align-items: center; gap: 8px; }
+.blog-card-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; font-size: 13.5px; font-weight: 700; color: var(--color-accent); }
+.blog-card-link svg { transition: transform 0.2s ease; }
+.blog-card:hover .blog-card-link svg { transform: translateX(3px); }
+
+/* ═══ CATEGORY FILTER BAR (in-page navigation for browsing articles) ═══ */
+.blog-filter-bar { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 32px 2.5vw 0; }
+.blog-filter-btn { font-family: var(--font); font-size: 13px; font-weight: 600; color: var(--text-2); background: var(--chip-bg); border: 1px solid var(--outline-soft); border-radius: 100px; padding: 8px 18px; cursor: pointer; transition: background 0.18s, color 0.18s, border-color 0.18s; }
+.blog-filter-btn:hover { border-color: var(--outline-soft-hover); color: var(--text-1); }
+.blog-filter-btn.is-active { background: var(--color-dominant); border-color: var(--color-dominant); color: #fff; }
+
+/* ═══ PAGINATION (page navigator below the article grid) ═══ */
+.blog-pagination { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; margin: 40px 2.5vw 0; }
+.blog-page-btn { font-family: var(--font); font-size: 14px; font-weight: 600; color: var(--text-2); background: var(--chip-bg); border: 1px solid var(--outline-soft); border-radius: 10px; min-width: 40px; height: 40px; padding: 0 12px; cursor: pointer; transition: background 0.18s, color 0.18s, border-color 0.18s; }
+.blog-page-btn:hover:not(:disabled) { border-color: var(--outline-soft-hover); color: var(--text-1); }
+.blog-page-btn.is-active { background: var(--color-dominant); border-color: var(--color-dominant); color: #fff; }
+.blog-page-btn:disabled { opacity: 0.4; cursor: default; }
+
+.cap-card, .js-reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease-out, transform 0.3s ease-out, border-color 0.3s ease-out, box-shadow 0.3s ease-out, background 0.3s ease-out; }
+.cap-card.cap-card--visible, .js-reveal.js-reveal--visible { opacity: 1; transform: translateY(0); }
+@media (prefers-reduced-motion: reduce) { .cap-card, .js-reveal { opacity: 1; transform: none; transition: none; } }
+
+/* ═══ CTA PANEL ═══ */
+.eyebrow { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent); margin-bottom: 16px; }
+.cta-wrap { margin: 64px 2.5vw 0; }
+.cta-card { border-radius: var(--radius-card); padding: 84px 6% 88px; text-align: center; position: relative; overflow: hidden; background: radial-gradient(ellipse farthest-corner at 0% 0% in oklch, #141732 0%, #272D60 30%, #444D90 58%, #B8CDF3 100%); --text-1: var(--text-1-dark); --text-2: var(--text-2-dark); --text-3: var(--text-3-dark); color: var(--text-1); }
+.cta-card::before { content: ''; position: absolute; width: 700px; height: 420px; top: -80px; left: 50%; transform: translateX(-50%); background: radial-gradient(ellipse at center, rgba(68,77,144,0.35) 0%, transparent 68%); filter: blur(40px); pointer-events: none; }
+.cta-card::after { content: ''; position: absolute; width: 460px; height: 460px; bottom: -140px; right: -80px; background: radial-gradient(circle, rgba(184,205,243,0.4) 0%, transparent 72%); filter: blur(55px); pointer-events: none; }
+.cta-content { position: relative; z-index: 1; }
+.cta-heading { font-size: clamp(28px, 4vw, 46px); font-weight: 800; letter-spacing: -0.025em; line-height: 1.12; margin-bottom: 20px; text-wrap: balance; }
+.cta-body { font-size: 16px; line-height: 1.7; color: var(--text-2); max-width: 560px; margin: 0 auto 36px; text-wrap: pretty; }
+
+/* ═══ FOOTER ═══════════════════════════════════════════════════════ */
+.site-footer {
+  position: relative; z-index: 1;
+  margin: 40px 2.5vw 24px;
+  background: linear-gradient(140deg, #0c0e24 0%, #131734 48%, #1a1060 100%);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: var(--radius-card);
+  padding: 56px 7% 28px;
+  font-size: 13px;
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  --text-1: var(--text-1-dark);
+  --text-2: var(--text-2-dark);
+  --text-3: var(--text-3-dark);
+  color: var(--text-1);
+}
+.footer-grid {
+  display: grid; grid-template-columns: 1.6fr 1fr 1fr 1.3fr; gap: 40px;
+  padding-bottom: 40px; margin-bottom: 28px;
+  border-bottom: 1px solid rgba(255,255,255,0.10);
+}
+.footer-brand-col { display: flex; flex-direction: column; gap: 16px; }
+.footer-logo { text-decoration: none; align-self: flex-start; margin-bottom: 14px; }
+.footer-logo-img { height: 52px; width: auto; display: block; }
+.footer-desc { font-size: 13px; line-height: 1.65; color: var(--text-2); max-width: 260px; margin: 0; }
+.footer-social { display: flex; gap: 10px; }
+.footer-social a {
+  display: flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px; border-radius: 8px;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12);
+  color: var(--text-2); text-decoration: none;
+  transition: background 0.18s, border-color 0.18s, color 0.18s;
+}
+.footer-social a:hover { background: color-mix(in srgb, var(--color-dominant) 14%, transparent); border-color: color-mix(in srgb, var(--color-blue-accent) 45%, transparent); color: var(--text-1); }
+.footer-social svg { width: 16px; height: 16px; fill: currentColor; }
+
+.footer-col-heading { font-size: 13px; font-weight: 700; color: var(--text-1); margin: 0 0 16px; }
+.footer-col-links { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 11px; }
+.footer-col-links a { font-size: 13px; font-weight: 500; color: var(--text-2); text-decoration: none; transition: color 0.18s; }
+.footer-col-links a:hover { color: var(--text-1); }
+
+.footer-newsletter-desc { font-size: 13px; line-height: 1.6; color: var(--text-2); margin: 0 0 16px; }
+.footer-newsletter-form { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.16); border-radius: 100px; padding: 5px; }
+.footer-newsletter-form input {
+  flex: 1; min-width: 0; background: transparent; border: 0; outline: 0;
+  font: inherit; font-size: 13px; color: var(--text-1); padding: 8px 14px;
+}
+.footer-newsletter-form input::placeholder { color: var(--text-3); }
+.footer-newsletter-form button {
+  display: flex; align-items: center; gap: 5px; flex: none;
+  font: inherit; font-size: 13px; font-weight: 600; color: #fff;
+  background: var(--color-accent); border: 0; border-radius: 100px;
+  padding: 9px 16px; cursor: pointer;
+  transition: filter 0.18s, transform 0.18s;
+}
+.footer-newsletter-form button:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.footer-newsletter-form button svg { width: 13px; height: 13px; }
+
+.footer-bottom { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.footer-copy { font-size: 13px; color: var(--text-3); margin: 0; }
+.footer-legal { display: flex; gap: 22px; list-style: none; margin: 0; padding: 0; }
+.footer-legal a { font-size: 13px; color: var(--text-3); text-decoration: none; transition: color 0.18s; }
+.footer-legal a:hover { color: var(--text-1); }
+
+@media (max-width: 900px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; row-gap: 32px; }
+}
+@media (max-width: 560px) {
+  .site-footer { margin: 20px 16px 20px; padding: 40px 6% 24px; }
+  .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+  .footer-bottom { flex-direction: column; align-items: flex-start; }
+}
+
+@media (max-width: 560px) {
+  
+  
+  .cap-section { margin: 20px 16px 0; }
+}
+
+/* ═══ POST ARTICLE ═══ */
+.post-wrap { max-width: 760px; margin: 0 auto; padding: 0 2.5vw; }
+.post-back { display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 600; color: var(--text-2); margin-bottom: 28px; transition: color 0.18s; }
+.post-back:hover { color: var(--text-1); }
+.post-cats { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+.post-cat-chip { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-1); background: var(--chip-bg); border: 1px solid var(--outline-soft); border-radius: 100px; padding: 6px 14px; }
+.post-title { font-size: clamp(28px, 4vw, 44px); font-weight: 800; letter-spacing: -0.025em; line-height: 1.14; margin-bottom: 20px; text-wrap: balance; }
+.post-meta { font-size: 13.5px; color: var(--text-3); margin-bottom: 36px; display: flex; align-items: center; gap: 8px; }
+.post-hero-media { position: relative; width: 100%; aspect-ratio: 16/9; border-radius: var(--radius-card); overflow: hidden; margin-bottom: 44px; background: linear-gradient(135deg, color-mix(in srgb, var(--color-dominant) 14%, transparent), color-mix(in srgb, var(--color-blue-accent) 18%, transparent)); }
+.post-hero-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.post-hero-media:has(img)::after { content: ""; position: absolute; inset: 0; background: var(--color-blue-accent); opacity: 0.55; pointer-events: none; }
+.post-body { font-size: 16.5px; line-height: 1.8; color: var(--text-2); }
+.post-body p { margin-bottom: 22px; }
+.post-body h3 { font-size: 21px; font-weight: 800; color: var(--text-1); letter-spacing: -0.015em; line-height: 1.3; margin: 40px 0 16px; }
+.post-body ul { list-style: none; margin: 0 0 22px; padding: 0; }
+.post-body li { position: relative; padding-left: 26px; margin-bottom: 12px; }
+.post-body li::before { content: ''; position: absolute; left: 4px; top: 10px; width: 6px; height: 6px; border-radius: 50%; background: var(--color-accent); }
+.post-body a { color: var(--color-dominant); font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
+.post-body a:hover { color: var(--color-accent); }
+.post-article { margin: 140px 0 0; }
+
+@media (max-width: 560px) {
+  .post-article { margin-top: 120px; }
+}
+
+</style>
+</head>
+<body>
+
+<div class="page-bg" aria-hidden="true">
+  <div class="bloom bloom--left"></div>
+  <div class="bloom bloom--right"></div>
+</div>
+
+<div class="grain-overlay" aria-hidden="true">
+  <svg xmlns="http://www.w3.org/2000/svg">
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.80" numOctaves="4" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+    <rect width="100%" height="100%" filter="url(#grain)"/>
+  </svg>
+</div>
+
+<div class="nav-outer">
+  <a href="index.html" class="nav-brand">
+    <img src="images/site/hg-logo.png" alt="Health Generation" class="nav-brand-logo">
+  </a>
+  <nav class="site-nav" aria-label="Main navigation">
+    <ul class="nav-links">
+      <li><a href="capabilities.html">Capabilities</a></li>
+      <li><a href="case-studies.html">Case Studies</a></li>
+      <li><a href="blog.html" class="is-current">Resources</a></li>
+    </ul>
+    <a href="contact.html" class="nav-cta">Talk to Our Team</a>
+    <button class="nav-hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="nav-drawer"><span></span></button>
+  </nav>
+</div>
+
+<div class="nav-drawer" id="nav-drawer" role="dialog" aria-label="Navigation menu">
+  <a href="capabilities.html">Capabilities</a>
+  <a href="case-studies.html">Case Studies</a>
+  <a href="blog.html" class="is-current">Resources</a>
+  <a href="contact.html" class="nav-drawer-cta">Talk to Our Team</a>
+</div>
+
+<main>
+
+<section class="page-hero" aria-label="Page hero">
+  <div class="page-hero-card">
+    <span class="page-hero-badge">Resources</span>
+    <h1 class="page-hero-heading">Insight on funding, care minutes and aged care strategy.</h1>
+    <p class="page-hero-sub">Practical, provider-facing analysis on AN-ACC funding, care minutes management and strengthened Quality Standards compliance &mdash; the same thinking behind our client work.</p>
+  </div>
+</section>
+
+<nav class="blog-filter-bar" aria-label="Filter articles by category">
+      <button type="button" class="blog-filter-btn is-active" data-filter="all">All</button>
+      <button type="button" class="blog-filter-btn" data-filter="AN-ACC Funding">AN-ACC Funding</button>
+      <button type="button" class="blog-filter-btn" data-filter="Strategy">Strategy</button>
+      <button type="button" class="blog-filter-btn" data-filter="Knowledge">Knowledge</button>
+</nav>
+
+<section class="cap-section cap-section--blog-grid" aria-label="Blog posts">
+  <div class="cap-grid" id="blogGrid">
+      <a href="an-acc-change-explorer-launch.html" class="blog-card js-reveal" data-reveal-delay="0" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/an-acc-change-explorer-launch.avif" alt="Two aged care professionals walking side by side down a hallway, engaged in conversation, with a calm and collaborative atmosphere." loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">AN-ACC Change Explorer Launch</h2>
+          <p class="blog-card-excerpt">On 2 September 2026, the Government confirmed the AN-ACC base price will rise from $295.64 to $303.19 from 1 October, a 2.55% uplift, retained on IHACPA&#x27;s…</p>
+          <div class="blog-card-meta"><span>Sep 4</span><span>&middot;</span><span>2 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="clinical-governance-the-compliance-evidence-bar-under-the-strengthened-aged-care-quality-standards.html" class="blog-card js-reveal" data-reveal-delay="90" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/clinical-governance-the-compliance-evidence-bar-under-the-strengthened-aged-care-quality-standards.avif" alt="Standard 5 in mid-2026 — graded Compliance assessment is live and rolling by registration renewal. Continuous evidenced conformance vs point-in-time readiness." loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">Clinical governance &amp; the compliance evidence bar under the strengthened Aged Care Quality Standards.</h2>
+          <p class="blog-card-excerpt">Eight months in, here&#x27;s what a lot of boards still haven&#x27;t clocked: the strengthened Standards aren&#x27;t a thing you&#x27;re preparing for anymore. They&#x27;re already…</p>
+          <div class="blog-card-meta"><span>Jul 30</span><span>&middot;</span><span>5 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="clinical-assurance-matters.html" class="blog-card js-reveal" data-reveal-delay="180" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/clinical-assurance-matters.avif" alt="" loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">Confidence isn&#x27;t built during an audit. It&#x27;s built every day.</h2>
+          <p class="blog-card-excerpt">Across aged care, we&#x27;ve seen the conversation shift.</p>
+          <div class="blog-card-meta"><span>Jul 21</span><span>&middot;</span><span>1 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="occupational-violence-worker-safety-in-residential-aged-care.html" class="blog-card js-reveal" data-reveal-delay="270" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/occupational-violence-worker-safety-in-residential-aged-care.avif" alt="Lone-worker duress alerting as both worker protection and compliance evidence under the strengthened Standards." loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">Occupational violence &amp; worker safety in residential aged care.</h2>
+          <p class="blog-card-excerpt">Eighty-eight per cent of nurses, midwives and carers have experienced or witnessed violence or aggression at work. In 2019 that figure was 80%. It&#x27;s moving…</p>
+          <div class="blog-card-meta"><span>Jul 16</span><span>&middot;</span><span>4 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="restrictive-practices.html" class="blog-card js-reveal" data-reveal-delay="360" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/restrictive-practices.avif" alt="" loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">Restrictive Practices</h2>
+          <p class="blog-card-excerpt">For years, &quot;last resort&quot; was a clinical judgment. A resident escalated, a shift turned bad, and someone - a nurse, a GP, a duty manager at 2am - made a…</p>
+          <div class="blog-card-meta"><span>Jul 2</span><span>&middot;</span><span>3 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="smart-practice-10-measure-success-by-outcomes-not-activity.html" class="blog-card js-reveal" data-reveal-delay="450" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/smart-practice-10-measure-success-by-outcomes-not-activity.avif" alt="Two aged care professionals walking side by side down a hallway, engaged in conversation, with a calm and collaborative atmosphere." loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">Smart Practice 10 - Measure Success by Outcomes, Not Activity</h2>
+          <p class="blog-card-excerpt">This is part of our Smart Practice series on funding and care minute management, focused on improving control, compliance and financial performance.</p>
+          <div class="blog-card-meta"><span>Jun 17</span><span>&middot;</span><span>1 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="smart-practice-9-turn-live-data-into-repeatable-decisions.html" class="blog-card js-reveal" data-reveal-delay="0" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/smart-practice-9-turn-live-data-into-repeatable-decisions.avif" alt="Two aged care professionals walking side by side down a hallway, engaged in conversation, with a calm and collaborative atmosphere." loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">Smart Practice 9 - Turn Live Data Into Repeatable Decisions</h2>
+          <p class="blog-card-excerpt">This is part of our Smart Practice series on funding and care minute management, focused on improving control, compliance and financial performance.</p>
+          <div class="blog-card-meta"><span>Jun 10</span><span>&middot;</span><span>1 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="smart-practice-8-track-funding-and-care-minutes-while-there-s-still-time-to-act.html" class="blog-card js-reveal" data-reveal-delay="90" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/smart-practice-8-track-funding-and-care-minutes-while-there-s-still-time-to-act.avif" alt="Two aged care professionals walking side by side down a hallway, engaged in conversation, with a calm and collaborative atmosphere." loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">Smart Practice 8 - Track Funding and Care Minutes While There&#x27;s Still Time to Act</h2>
+          <p class="blog-card-excerpt">This is part of our Smart Practice series on funding and care minute management, focused on improving control, compliance and financial performance.</p>
+          <div class="blog-card-meta"><span>Jun 2</span><span>&middot;</span><span>1 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="smart-practice-7-plan-care-minutes-for-moving-occupancy.html" class="blog-card js-reveal" data-reveal-delay="180" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/smart-practice-7-plan-care-minutes-for-moving-occupancy.avif" alt="Two aged care professionals walking side by side down a hallway, engaged in conversation, with a calm and collaborative atmosphere." loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">Smart Practice 7 - Plan Care Minutes for Moving Occupancy</h2>
+          <p class="blog-card-excerpt">This is part of our Smart Practice series on funding and care minute management, focused on improving control, compliance and financial performance.</p>
+          <div class="blog-card-meta"><span>May 26</span><span>&middot;</span><span>1 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="smart-practice-6-align-uplift-decisions-with-the-right-quarter.html" class="blog-card js-reveal" data-reveal-delay="270" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/smart-practice-6-align-uplift-decisions-with-the-right-quarter.avif" alt="Two aged care professionals walking side by side down a hallway, engaged in conversation, with a calm and collaborative atmosphere." loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">Smart Practice 6 - Align Uplift Decisions With the Right Quarter</h2>
+          <p class="blog-card-excerpt">This is part of our Smart Practice series on funding and care minute management, focused on improving control, compliance and financial performance.</p>
+          <div class="blog-card-meta"><span>May 19</span><span>&middot;</span><span>2 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="std1-std6-food-is-care.html" class="blog-card js-reveal" data-reveal-delay="360" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/std1-std6-food-is-care.avif" alt="Overlapping paperwork, reports, and computer screens slightly misaligned on a desk, conveying a fragmented and disjointed workflow in a documentary-style setting." loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">Food is Care (Std1 + Std6)</h2>
+          <p class="blog-card-excerpt">Food is never just food.</p>
+          <div class="blog-card-meta"><span>May 13</span><span>&middot;</span><span>1 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="smart-practice-5-model-before-you-commit.html" class="blog-card js-reveal" data-reveal-delay="450" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/smart-practice-5-model-before-you-commit.avif" alt="Two aged care professionals walking side by side down a hallway, engaged in conversation, with a calm and collaborative atmosphere." loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">Smart Practice 5 - Model Before You Commit</h2>
+          <p class="blog-card-excerpt">This is part of our Smart Practice series on funding and care minute management, focused on improving control, compliance and financial performance.</p>
+          <div class="blog-card-meta"><span>May 5</span><span>&middot;</span><span>1 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="cat-6-registration-review-findings.html" class="blog-card js-reveal" data-reveal-delay="0" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/cat-6-registration-review-findings.avif" alt="Overlapping paperwork, reports, and computer screens slightly misaligned on a desk, conveying a fragmented and disjointed workflow in a documentary-style setting." loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">Cat. 6 Registration Review Findings</h2>
+          <p class="blog-card-excerpt">At HG, our consultants have completed a few category 6 re-registration reviews and mock audits. Here&#x27;s the uncomfortable truth these early audits are exposing:</p>
+          <div class="blog-card-meta"><span>Apr 29</span><span>&middot;</span><span>1 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="smart-practice-4-turn-dashboards-into-decisions.html" class="blog-card js-reveal" data-reveal-delay="90" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/smart-practice-4-turn-dashboards-into-decisions.avif" alt="Small group of aged care staff gathered around a desk reviewing data together in a naturally lit office." loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">Smart Practice 4 - Turn Dashboards into Decisions</h2>
+          <p class="blog-card-excerpt">This is part of our Smart Practice series on funding and care minute management, focused on improving control, compliance and financial performance.</p>
+          <div class="blog-card-meta"><span>Apr 21</span><span>&middot;</span><span>1 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="care-plans-older-persons-leading-care.html" class="blog-card js-reveal" data-reveal-delay="180" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/care-plans-older-persons-leading-care.avif" alt="Aged care manager looking at papers." loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">Care Plans: Older Persons leading care.</h2>
+          <p class="blog-card-excerpt">Person‑centred care starts with listening.</p>
+          <div class="blog-card-meta"><span>Apr 14</span><span>&middot;</span><span>1 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="smart-practice-3-develop-a-purpose-built-model-to-manage-the-cost-of-care-minute-delivery.html" class="blog-card js-reveal" data-reveal-delay="270" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/smart-practice-3-develop-a-purpose-built-model-to-manage-the-cost-of-care-minute-delivery.avif" alt="Aged care manager looking at papers." loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">Smart Practice 3 - Develop a purpose built model to manage the cost of care minute delivery</h2>
+          <p class="blog-card-excerpt">This is part of our Smart Practice series on funding and care minute management, focused on improving control, compliance and financial performance.</p>
+          <div class="blog-card-meta"><span>Apr 7</span><span>&middot;</span><span>2 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="care-plans-has-anyone-told-you-they-re-actually-yours.html" class="blog-card js-reveal" data-reveal-delay="360" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/care-plans-has-anyone-told-you-they-re-actually-yours.avif" alt="Aged care manager looking at papers." loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">Care Plans: Has Anyone Told You They&#x27;re Actually Yours?</h2>
+          <p class="blog-card-excerpt">Care plans are everywhere in aged care. They&#x27;re talked about in meetings, reviewed by staff, updated in systems, and nodded at very seriously.</p>
+          <div class="blog-card-meta"><span>Mar 31</span><span>&middot;</span><span>1 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="smart-practice-2-build-a-unified-funding-resource-management-team.html" class="blog-card js-reveal" data-reveal-delay="450" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/smart-practice-2-build-a-unified-funding-resource-management-team.avif" alt="Aged care manager looking at papers." loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">Smart Practice 2 - Build a Unified Funding-Resource Management Team</h2>
+          <p class="blog-card-excerpt">This is part of our Smart Practice series on funding and care minute management, focused on improving control, compliance and financial performance.</p>
+          <div class="blog-card-meta"><span>Mar 24</span><span>&middot;</span><span>2 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="smart-practice-1-build-a-truly-dynamic-roster.html" class="blog-card js-reveal" data-reveal-delay="0" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/smart-practice-1-build-a-truly-dynamic-roster.avif" alt="Aged care manager looking at papers." loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">Smart Practice 1 - Build a Truly Dynamic Roster</h2>
+          <p class="blog-card-excerpt">This is part of our Smart Practice Series on funding and care minute management, focused on improving control, compliance and financial performance.</p>
+          <div class="blog-card-meta"><span>Mar 19</span><span>&middot;</span><span>1 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="from-random-audits-to-annual-assurance-the-next-step-for-care-minutes-reporting.html" class="blog-card js-reveal" data-reveal-delay="90" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/from-random-audits-to-annual-assurance-the-next-step-for-care-minutes-reporting.avif" alt="Aged care manager looking at papers." loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">From Random Audits to Annual Assurance: The Next Step for Care Minutes Reporting</h2>
+          <p class="blog-card-excerpt">The Department of Health has recently released guidance explaining how auditors will assess the Care Minutes Performance Statement. While the document is…</p>
+          <div class="blog-card-meta"><span>Mar 12</span><span>&middot;</span><span>2 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="strengthening-funding-confidence-without-adding-workload.html" class="blog-card js-reveal" data-reveal-delay="180" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/strengthening-funding-confidence-without-adding-workload.avif" alt="Aged care manager looking at papers." loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">Strengthening Funding Confidence Without Adding Workload</h2>
+          <p class="blog-card-excerpt">For an independent aged care home like Akooramak, the challenge wasn&#x27;t capability, it was visibility, time, and competing operational demands. With an…</p>
+          <div class="blog-card-meta"><span>Mar 5</span><span>&middot;</span><span>1 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="simmering-funding-pressure.html" class="blog-card js-reveal" data-reveal-delay="270" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/simmering-funding-pressure.avif" alt="Aged care manager looking at papers." loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">Simmering Funding Pressure</h2>
+          <p class="blog-card-excerpt">Since the new AN-ACC rates took effect on 1 October, we&#x27;ve helped clients impact-assess over 2,000 beds.</p>
+          <div class="blog-card-meta"><span>Feb 26</span><span>&middot;</span><span>1 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="insight-aged-care-workforce-crisis-1.html" class="blog-card js-reveal" data-reveal-delay="360" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/insight-aged-care-workforce-crisis-1.avif" alt="Aged care staff looking overwhelmed by work." loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">Insight: Aged Care Workforce Crisis</h2>
+          <p class="blog-card-excerpt">The Committee for Economic Development of Australia (CEDA)&#x27;s new report, Duty of care: How to fix the aged care worker shortage, says current labour…</p>
+          <div class="blog-card-meta"><span>Feb 26</span><span>&middot;</span><span>2 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="insight-aged-care-workforce-crisis.html" class="blog-card js-reveal" data-reveal-delay="450" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/insight-aged-care-workforce-crisis.avif" alt="Aged care staff looking overwhelmed by work." loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">Turning Extra Care Into Smarter Care</h2>
+          <p class="blog-card-excerpt">In many homes, teams deliver more care minutes than required. The intention is positive but often it happens without planning, control, or enough funding to…</p>
+          <div class="blog-card-meta"><span>Feb 26</span><span>&middot;</span><span>1 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="staffing-star-rating-a-clarity-lever-not-just-a-score-beyond-the-public-scorecard.html" class="blog-card js-reveal" data-reveal-delay="0" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/staffing-star-rating-a-clarity-lever-not-just-a-score-beyond-the-public-scorecard.avif" alt="Female aged care manager in a nursing home office reviewing a nurse shift roster on a large screen." loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">Staffing Star Rating: A Clarity Lever, Not Just a Score Beyond the Public Scorecard</h2>
+          <p class="blog-card-excerpt">Staffing Star Rating is often treated as a public scorecard, but it is more than that.</p>
+          <div class="blog-card-meta"><span>Feb 24</span><span>&middot;</span><span>2 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="what-the-new-care-minutes-report-tells-us-and-where-the-real-levers-are.html" class="blog-card js-reveal" data-reveal-delay="90" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/what-the-new-care-minutes-report-tells-us-and-where-the-real-levers-are.avif" alt="Female nurse holding a tablet with a digital calendar displaying colour-coded RN and EN shifts." loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">What the New Care Minutes Report Tells Us, and Where the Real Levers Are</h2>
+          <p class="blog-card-excerpt">The Australian Government has released its latest Care Minutes in Residential Aged Care Dashboard, providing an updated, aggregated view of how residential…</p>
+          <div class="blog-card-meta"><span>Feb 17</span><span>&middot;</span><span>2 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="before-you-act-on-care-minutes-get-oriented.html" class="blog-card js-reveal" data-reveal-delay="180" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/before-you-act-on-care-minutes-get-oriented.avif" alt="" loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">Before You Act on Care Minutes, Get Oriented</h2>
+          <p class="blog-card-excerpt">With Care Minute Supplement penalties approaching, many services are already shifting into response mode.</p>
+          <div class="blog-card-meta"><span>Feb 10</span><span>&middot;</span><span>2 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="a-real-life-50-000-care-minute-management-case-study.html" class="blog-card js-reveal" data-reveal-delay="270" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/a-real-life-50-000-care-minute-management-case-study.avif" alt="Aged care manager sitting at a computer reviewing data and graphs to monitor care minute performance and CMS funding compliance." loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">A Real-Life $50,000 Care Minute Management Case Study</h2>
+          <p class="blog-card-excerpt">Client Profile</p>
+          <div class="blog-card-meta"><span>Jan 19</span><span>&middot;</span><span>2 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="the-31-million-an-acc-funding-uplift-experience.html" class="blog-card js-reveal" data-reveal-delay="360" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/the-31-million-an-acc-funding-uplift-experience.avif" alt="Aged care manager sitting at a computer reviewing data and graphs to monitor care minute performance and CMS funding compliance." loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">The $31 Million AN-ACC Funding Uplift Experience</h2>
+          <p class="blog-card-excerpt">Over the past two years, our team has helped more than 130 aged care facilities capture $31,061,155 in additional annual AN-ACC variable funding - and along…</p>
+          <div class="blog-card-meta"><span>Jan 19</span><span>&middot;</span><span>2 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="a-tale-of-two-care-minute-strategies.html" class="blog-card js-reveal" data-reveal-delay="450" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/a-tale-of-two-care-minute-strategies.avif" alt="Aged care manager sitting at a computer reviewing data and graphs to monitor care minute performance and CMS funding compliance." loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">A Tale of Two Care Minute Strategies</h2>
+          <p class="blog-card-excerpt">I&#x27;ve been speaking with a number of managers overseeing funding and care minutes across their organisations. What stood out is that there are two distinct…</p>
+          <div class="blog-card-meta"><span>Jan 19</span><span>&middot;</span><span>2 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="an-acc-funding-and-care-minute-update-october-2025.html" class="blog-card js-reveal" data-reveal-delay="0" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/an-acc-funding-and-care-minute-update-october-2025.avif" alt="" loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">AN-ACC Funding AN-ACC &amp; Care Minute Update - October 2025</h2>
+          <p class="blog-card-excerpt">Our team has designed a great infographic to help you understand the different tiers.</p>
+          <div class="blog-card-meta"><span>Oct 2, 2025</span><span>&middot;</span><span>1 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="an-acc-funding-classifications-update-october-2025.html" class="blog-card js-reveal" data-reveal-delay="90" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/an-acc-funding-classifications-update-october-2025.avif" alt="" loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">AN-ACC Funding Classifications update - October 2025</h2>
+          <p class="blog-card-excerpt">Our team has designed a great infographic to help you understand the different tiers.</p>
+          <div class="blog-card-meta"><span>Sep 19, 2025</span><span>&middot;</span><span>1 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="preparing-for-the-first-assessed-quarter-of-care-minute-supplement.html" class="blog-card js-reveal" data-reveal-delay="180" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/preparing-for-the-first-assessed-quarter-of-care-minute-supplement.avif" alt="Aged care manager sitting at a computer reviewing data and graphs to monitor care minute performance and CMS funding compliance." loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">Preparing for the First Assessed Quarter of Care Minute Supplement</h2>
+          <p class="blog-card-excerpt">If you operate in a regional location, now is the perfect time to prepare strategies in case Care Minute Supplement is rolled out more broadly. And if…</p>
+          <div class="blog-card-meta"><span>Sep 19, 2025</span><span>&middot;</span><span>1 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="you-don-t-need-to-improve-much-to-gain-big-care-minute-supplement-explained.html" class="blog-card js-reveal" data-reveal-delay="270" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/you-don-t-need-to-improve-much-to-gain-big-care-minute-supplement-explained.avif" alt="Aged care manager sitting at a computer reviewing data and graphs to monitor care minute performance and CMS funding compliance." loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">You Don&#x27;t Need to Improve Much to Gain Big.</h2>
+          <p class="blog-card-excerpt">Care Minute Supplement (CMS) funding is designed to reward delivery. And the good news is — even small shifts in care minute performance can unlock…</p>
+          <div class="blog-card-meta"><span>Sep 4, 2025</span><span>&middot;</span><span>1 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="the-companion-service-that-helps-you-deliver-results.html" class="blog-card js-reveal" data-reveal-delay="360" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/the-companion-service-that-helps-you-deliver-results.avif" alt="" loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">The Companion Service That Helps You Deliver Results</h2>
+          <p class="blog-card-excerpt">Mirus Metrics and Care Minute Manager (CMM) are powerful tools — and they&#x27;re a core part of how we help our clients succeed.</p>
+          <div class="blog-card-meta"><span>Aug 21, 2025</span><span>&middot;</span><span>1 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="the-real-risk-behind-care-minute-supplement.html" class="blog-card js-reveal" data-reveal-delay="450" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/the-real-risk-behind-care-minute-supplement.avif" alt="A worried woman sitting in front of a computer surrounded by paperwork about the Care Minute Supplement penalty." loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">The Real Risk Behind Care Minute Supplement</h2>
+          <p class="blog-card-excerpt">The Care Minute Supplement (CMS) is often misunderstood. It&#x27;s not a bonus — it&#x27;s part of your base funding, and failing to meet your targets effectively…</p>
+          <div class="blog-card-meta"><span>Aug 14, 2025</span><span>&middot;</span><span>1 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="introducing-the-fre-model.html" class="blog-card js-reveal" data-reveal-delay="0" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/introducing-the-fre-model.avif" alt="" loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">Introducing the Funding-Resource Efficiency (FRE) Model</h2>
+          <p class="blog-card-excerpt">You don&#x27;t need more dashboards. You need one number: FRE.</p>
+          <div class="blog-card-meta"><span>Aug 8, 2025</span><span>&middot;</span><span>1 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="why-funding-and-care-minutes-must-be-managed-together.html" class="blog-card js-reveal" data-reveal-delay="90" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/why-funding-and-care-minutes-must-be-managed-together.avif" alt="" loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">Why Funding and Care Minutes Must Be Managed Together</h2>
+          <p class="blog-card-excerpt">A big part of your funding is based on your resident&#x27;s AN-ACC case mix and care delivery. That case mix determines your required care minutes. Your care…</p>
+          <div class="blog-card-meta"><span>Jul 31, 2025</span><span>&middot;</span><span>1 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="the-hidden-cost-of-unaligned-funding-and-workforce-planning.html" class="blog-card js-reveal" data-reveal-delay="180" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/the-hidden-cost-of-unaligned-funding-and-workforce-planning.avif" alt="Healthcare professionals reviewing performance data on a smartphone and tablet." loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">The Hidden Cost of Unaligned Funding and Workforce Planning</h2>
+          <p class="blog-card-excerpt">You can deliver 100% of your care minutes and still operate at a financial loss.</p>
+          <div class="blog-card-meta"><span>Jul 24, 2025</span><span>&middot;</span><span>1 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="copy-of-an-acc-funding-classifications-update-march-2025.html" class="blog-card js-reveal" data-reveal-delay="270" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/copy-of-an-acc-funding-classifications-update-march-2025.avif" alt="" loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">AN-ACC Funding Classifications update - March 2025</h2>
+          <p class="blog-card-excerpt">Our team has designed a great infographic to help you understand the different tiers.</p>
+          <div class="blog-card-meta"><span>Mar 13, 2025</span><span>&middot;</span><span>1 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="discover-tips-for-a-healthy-holiday-season.html" class="blog-card js-reveal" data-reveal-delay="360" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/discover-tips-for-a-healthy-holiday-season.avif" alt="" loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">Discover Tips for a Healthy Holiday Season</h2>
+          <p class="blog-card-excerpt">The holiday season is a time for joy, celebration, and connection, but it can also bring its share of stress and temptations. Balancing festive indulgences…</p>
+          <div class="blog-card-meta"><span>Dec 20, 2024</span><span>&middot;</span><span>2 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="more-funding-for-aged-care.html" class="blog-card js-reveal" data-reveal-delay="450" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><svg width="40" height="40" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v14H4z" stroke="currentColor" stroke-width="1.5"/><path d="M4 15l4-4 3 3 5-6 4 5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">Executive Digest of Key Funding and Care Minutes Changes: Effective 1 October 2024</h2>
+          <p class="blog-card-excerpt">Exciting updates have just been released in the aged care sector that can significantly impact funding and operations.</p>
+          <div class="blog-card-meta"><span>Sep 30, 2024</span><span>&middot;</span><span>2 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="an-acc-funding-classifications-update-october-2024.html" class="blog-card js-reveal" data-reveal-delay="0" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/an-acc-funding-classifications-update-october-2024.avif" alt="" loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">AN-ACC Funding Classifications update - October 2024</h2>
+          <p class="blog-card-excerpt">Our team has designed a great infographic to help you understand the different tiers.</p>
+          <div class="blog-card-meta"><span>Sep 19, 2024</span><span>&middot;</span><span>1 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="aged-care-consultant.html" class="blog-card js-reveal" data-reveal-delay="90" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/aged-care-consultant.avif" alt="" loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">How to Choose the Right Aged Care Consultant</h2>
+          <p class="blog-card-excerpt">Choosing the right aged care consultant is crucial for ensuring your loved ones receive the best possible care. An experienced aged care consultant can…</p>
+          <div class="blog-card-meta"><span>May 30, 2024</span><span>&middot;</span><span>2 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="unlock-hidden-an-acc-funding.html" class="blog-card js-reveal" data-reveal-delay="180" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/unlock-hidden-an-acc-funding.avif" alt="" loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">Unlock Hidden AN-ACC Funding Opportunities: A Message from Health Generation&#x27;s MD</h2>
+          <p class="blog-card-excerpt">Dear Valued Customers and Prospective Clients,</p>
+          <div class="blog-card-meta"><span>May 29, 2024</span><span>&middot;</span><span>2 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="aged-care-consultant-insight.html" class="blog-card js-reveal" data-reveal-delay="270" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/aged-care-consultant-insight.avif" alt="" loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">Embracing Human Rights: Aged Care Consultant Insight</h2>
+          <p class="blog-card-excerpt">The landscape of aged care in Australia is on the cusp of a transformative era, heralded by the introduction of the &quot;New Aged Care Act exposure draft.&quot; This…</p>
+          <div class="blog-card-meta"><span>Apr 5, 2024</span><span>&middot;</span><span>3 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="an-acc-funding-classifications.html" class="blog-card js-reveal" data-reveal-delay="360" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/an-acc-funding-classifications.avif" alt="" loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">AN-ACC Funding Classifications update - December 2023</h2>
+          <p class="blog-card-excerpt">Our team has designed a great infographic to help you understand the different tiers.</p>
+          <div class="blog-card-meta"><span>Jan 10, 2024</span><span>&middot;</span><span>1 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="an-acc-funding-pricing-update.html" class="blog-card js-reveal" data-reveal-delay="450" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><svg width="40" height="40" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v14H4z" stroke="currentColor" stroke-width="1.5"/><path d="M4 15l4-4 3 3 5-6 4 5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">AN-ACC Funding Pricing Update</h2>
+          <p class="blog-card-excerpt">From July 1st 2023, new AN-ACC aged care funding rates and subsidies will come into effect. We&#x27;ve summarised the key changes below, and provided some…</p>
+          <div class="blog-card-meta"><span>May 19, 2023</span><span>&middot;</span><span>2 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="key-an-acc-challenges-faced-by-providers.html" class="blog-card js-reveal" data-reveal-delay="0" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><svg width="40" height="40" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v14H4z" stroke="currentColor" stroke-width="1.5"/><path d="M4 15l4-4 3 3 5-6 4 5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">Key AN-ACC challenges faced by providers</h2>
+          <p class="blog-card-excerpt">Optimal funding outcomes are only achieved with proactive management.</p>
+          <div class="blog-card-meta"><span>May 12, 2023</span><span>&middot;</span><span>2 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="the-an-acc-assessment-process-made-simple.html" class="blog-card js-reveal" data-reveal-delay="90" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><svg width="40" height="40" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v14H4z" stroke="currentColor" stroke-width="1.5"/><path d="M4 15l4-4 3 3 5-6 4 5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">The AN-ACC Assessment process made simple</h2>
+          <p class="blog-card-excerpt">We believe a thorough understanding of the assessment process will assist providers be more prepared for an assessor visit, and optimise the accuracy of…</p>
+          <div class="blog-card-meta"><span>May 5, 2023</span><span>&middot;</span><span>2 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="an-acc-reconsideration-made-simple.html" class="blog-card js-reveal" data-reveal-delay="180" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><svg width="40" height="40" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v14H4z" stroke="currentColor" stroke-width="1.5"/><path d="M4 15l4-4 3 3 5-6 4 5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">AN-ACC Reconsideration made simple</h2>
+          <p class="blog-card-excerpt">Reconsideration is a process of having a resident reassessed by another external AN-ACC assessor, if the initial classification is perceived to be…</p>
+          <div class="blog-card-meta"><span>Apr 28, 2023</span><span>&middot;</span><span>2 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="differences-between-acfi-an-acc.html" class="blog-card js-reveal" data-reveal-delay="270" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/differences-between-acfi-an-acc.avif" alt="" loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">Differences between ACFI &amp; AN-ACC</h2>
+          <p class="blog-card-excerpt">Our team has designed a great infographic to help you understand the differences between the old and new funding models.</p>
+          <div class="blog-card-meta"><span>Apr 21, 2023</span><span>&middot;</span><span>1 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="an-acc-classifications-made-simple.html" class="blog-card js-reveal" data-reveal-delay="360" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/an-acc-classifications-made-simple.avif" alt="" loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">AN-ACC Classifications made simple</h2>
+          <p class="blog-card-excerpt">Our team has designed a great infographic to help you understand the different tiers.</p>
+          <div class="blog-card-meta"><span>Apr 14, 2023</span><span>&middot;</span><span>1 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="an-acc-reclassification-made-simple.html" class="blog-card js-reveal" data-reveal-delay="450" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><svg width="40" height="40" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v14H4z" stroke="currentColor" stroke-width="1.5"/><path d="M4 15l4-4 3 3 5-6 4 5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">AN-ACC Reclassification made simple</h2>
+          <p class="blog-card-excerpt">Reclassification is a process of having a resident reassessed by an external AN-ACC assessor, and potentially reassigned a different funding classification…</p>
+          <div class="blog-card-meta"><span>Apr 6, 2023</span><span>&middot;</span><span>3 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="an-acc-funding-model-made-simple.html" class="blog-card js-reveal" data-reveal-delay="0" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><img src="images/blog/an-acc-funding-model-made-simple.avif" alt="" loading="lazy"></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">AN-ACC Funding model made simple</h2>
+          <p class="blog-card-excerpt">The AN-ACC funding model is fundamentally different to ACFI and more complicated in many aspects. Many aged care providers are still struggling to grasp the…</p>
+          <div class="blog-card-meta"><span>Mar 24, 2023</span><span>&middot;</span><span>1 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+      <a href="funding-reforms-made-simple.html" class="blog-card js-reveal" data-reveal-delay="90" data-cats="AN-ACC Funding|Strategy|Knowledge">
+        <div class="blog-card-media"><svg width="40" height="40" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v14H4z" stroke="currentColor" stroke-width="1.5"/><path d="M4 15l4-4 3 3 5-6 4 5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+        <div class="blog-card-body">
+          <span class="blog-card-cat">AN-ACC Funding</span>
+          <h2 class="blog-card-title">Funding Reforms Made Simple</h2>
+          <p class="blog-card-excerpt">The new Aged Care funding reforms stipulate designated funding applicable to and determined by the classification of residential care required by the…</p>
+          <div class="blog-card-meta"><span>Mar 9, 2023</span><span>&middot;</span><span>2 min read</span></div>
+          <span class="blog-card-link">Read the full article
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+  </div>
+  <nav class="blog-pagination" id="blogPagination" aria-label="Article pages"></nav>
+</section>
+
+<section class="cta-wrap" aria-label="Call to action">
+  <div class="cta-card">
+    <div class="cta-content">
+      <span class="eyebrow">Start the conversation</span>
+      <h2 class="cta-heading">Tell us what's happening.</h2>
+      <p class="cta-body">If any of this reflects what you're navigating right now, let's talk about it.</p>
+      <a href="contact.html" class="btn btn-primary">
+        Tell Us What's Happening
+        <span class="btn-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<script>
+(function () {
+  var bar = document.querySelector('.blog-filter-bar');
+  var grid = document.getElementById('blogGrid');
+  var pagination = document.getElementById('blogPagination');
+  if (!grid) return;
+  var PER_PAGE = 14;
+  var allCards = Array.prototype.slice.call(grid.querySelectorAll('.blog-card'));
+  var currentFilter = 'all';
+  var currentPage = 1;
+
+  function visibleCards() {
+    return allCards.filter(function (card) {
+      var cats = (card.dataset.cats || '').split('|');
+      return currentFilter === 'all' || cats.indexOf(currentFilter) !== -1;
+    });
+  }
+
+  function renderPagination(totalPages) {
+    if (!pagination) return;
+    if (totalPages <= 1) { pagination.innerHTML = ''; return; }
+    var parts = [];
+    parts.push('<button type="button" class="blog-page-btn blog-page-nav" data-page="' + (currentPage - 1) + '"' + (currentPage === 1 ? ' disabled' : '') + ' aria-label="Previous page">&larr;</button>');
+    for (var i = 1; i <= totalPages; i++) {
+      parts.push('<button type="button" class="blog-page-btn' + (i === currentPage ? ' is-active' : '') + '" data-page="' + i + '" aria-current="' + (i === currentPage ? 'page' : 'false') + '">' + i + '</button>');
+    }
+    parts.push('<button type="button" class="blog-page-btn blog-page-nav" data-page="' + (currentPage + 1) + '"' + (currentPage === totalPages ? ' disabled' : '') + ' aria-label="Next page">&rarr;</button>');
+    pagination.innerHTML = parts.join('');
+  }
+
+  function render(scroll) {
+    var visible = visibleCards();
+    var totalPages = Math.max(1, Math.ceil(visible.length / PER_PAGE));
+    if (currentPage > totalPages) currentPage = totalPages;
+    allCards.forEach(function (card) { card.style.display = 'none'; });
+    var start = (currentPage - 1) * PER_PAGE;
+    visible.slice(start, start + PER_PAGE).forEach(function (card) { card.style.display = ''; });
+    renderPagination(totalPages);
+    if (scroll) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  if (bar) {
+    bar.addEventListener('click', function (e) {
+      var btn = e.target.closest('.blog-filter-btn');
+      if (!btn) return;
+      bar.querySelectorAll('.blog-filter-btn').forEach(function (b) { b.classList.remove('is-active'); });
+      btn.classList.add('is-active');
+      currentFilter = btn.dataset.filter;
+      currentPage = 1;
+      render(false);
+    });
+  }
+
+  if (pagination) {
+    pagination.addEventListener('click', function (e) {
+      var btn = e.target.closest('.blog-page-btn');
+      if (!btn || btn.disabled) return;
+      var page = parseInt(btn.dataset.page, 10);
+      if (!page || page < 1) return;
+      currentPage = page;
+      render(true);
+    });
+  }
+
+  render(false);
+})();
+</script>
+
+</main>
+
+<footer class="site-footer" aria-label="Site footer">
+  <div class="footer-grid">
+    <div class="footer-brand-col">
+      <a href="index.html" class="footer-logo">
+        <img src="images/site/hg-logo.png" alt="Health Generation" class="footer-logo-img">
+      </a>
+      <p class="footer-desc">Care minute strategy, AN-ACC funding intelligence and clinical assurance for aged care providers &mdash; connected end to end, until it's fixed.</p>
+      <div class="footer-social">
+        <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+        <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97h-1.513c-1.491 0-1.956.93-1.956 1.886v2.267h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg></a>
+        <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <p class="footer-col-heading">Explore</p>
+      <ul class="footer-col-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="capabilities.html">Capabilities</a></li>
+        <li><a href="case-studies.html">Case Studies</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <p class="footer-col-heading">Resources</p>
+      <ul class="footer-col-links">
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <p class="footer-col-heading">Stay Informed</p>
+      <p class="footer-newsletter-desc">Funding, workforce and compliance insights for aged care providers, straight to your inbox.</p>
+      <form class="footer-newsletter-form" onsubmit="return false;">
+        <input type="email" placeholder="Email address" aria-label="Email address">
+        <button type="submit">Subscribe <svg viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </form>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy">&copy; 2026 Health Generation. All rights reserved.</p>
+    <ul class="footer-legal">
+      <li><a href="#">Privacy Policy</a></li>
+      <li><a href="#">Terms of Service</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var btn = document.querySelector('.nav-hamburger');
+  var drawer = document.getElementById('nav-drawer');
+  if (!btn || !drawer) return;
+  function openMenu() {
+    drawer.classList.add('is-open'); btn.classList.add('is-open');
+    btn.setAttribute('aria-expanded', 'true'); btn.setAttribute('aria-label', 'Close menu');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeMenu() {
+    drawer.classList.remove('is-open'); btn.classList.remove('is-open');
+    btn.setAttribute('aria-expanded', 'false'); btn.setAttribute('aria-label', 'Open menu');
+    document.body.style.overflow = '';
+  }
+  btn.addEventListener('click', function () { drawer.classList.contains('is-open') ? closeMenu() : openMenu(); });
+  drawer.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', closeMenu); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeMenu(); });
+})();
+</script>
+
+<script>
+(function () {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var reveals = document.querySelectorAll('.js-reveal');
+  if (reveals.length) {
+    var revealObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        var el = entry.target;
+        if (entry.isIntersecting) {
+          var delay = parseFloat(el.dataset.revealDelay) || 0;
+          setTimeout(function () { el.classList.add('js-reveal--visible'); }, delay);
+        } else {
+          el.classList.remove('js-reveal--visible');
+        }
+      });
+    }, { threshold: 0.15 });
+    reveals.forEach(function (el) { revealObserver.observe(el); });
+  }
+})();
+</script>
+
+</body>
+</html>
