@@ -396,7 +396,7 @@ section { position: relative; }
 
     <div class="form-success" id="formSuccess" hidden>
       <p class="form-success-title">Thanks, <span id="formSuccessName">there</span>.</p>
-      <p class="form-success-body">Your email app should have opened with your message ready to send to our team. If it didn't, email us directly at <a href="mailto:hello@healthgen.io" style="color:var(--hg-accent);font-weight:700;">hello@healthgen.io</a>.</p>
+      <p class="form-success-body">Your email app should have opened with your message ready to send to our team. If it didn't, email us directly at <a href="mailto:operations@healthgen.io" style="color:var(--hg-accent);font-weight:700;">operations@healthgen.io</a>.</p>
     </div>
 
     </div>
@@ -524,7 +524,7 @@ section { position: relative; }
       message || '(none provided)'
     ];
     var body = encodeURIComponent(bodyLines.join('\n'));
-    var mailto = 'mailto:hello@healthgen.io?subject=' + subject + '&body=' + body;
+    var mailto = 'mailto:operations@healthgen.io?subject=' + subject + '&body=' + body;
 
     if (successName) successName.textContent = first || 'there';
     form.hidden = true;
