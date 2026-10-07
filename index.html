@@ -411,7 +411,7 @@ section { position: relative; }
 .hero-badge .badge-dot { display: inline-block; flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--color-accent); margin: 0 1px; }
 .hero-heading { font-family: var(--font); font-weight: 800; letter-spacing: -0.025em; margin-bottom: 18px; text-wrap: balance; }
 .hero-line-1 { display: block; font-size: clamp(28px, 4vw, 50px); line-height: 1.12; letter-spacing: -0.025em; color: var(--text-1); }
-.hero-line-2 { display: inline-block; font-size: clamp(36px, 5.2vw, 72px); line-height: 1.05; letter-spacing: -0.03em; color: #fff; }
+.hero-line-2 { display: inline-block; font-size: clamp(32px, 5.2vw, 68px); line-height: 1.05; letter-spacing: -0.03em; color: #fff; }
 .hero-sub { font-size: clamp(15px, 1.3vw, 17px); font-weight: 400; line-height: 1.65; color: var(--text-2); max-width: 640px; margin: 0 auto 40px; text-wrap: pretty; }
 .hero-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; justify-content: center; margin-bottom: 8px; }
 
@@ -428,7 +428,7 @@ section { position: relative; }
 }
 @media (min-width: 769px) {
   .hero-content { max-width: min(94vw, 1060px); }
-  .hero-line-2 { white-space: nowrap; font-size: clamp(36px, 5.2vw, 72px); }
+  .hero-line-2 { white-space: nowrap; font-size: clamp(32px, 5.2vw, 68px); }
 }
 
 /* ═══ SLIDING PILL "CONVEYOR BELT" — PORTED CUSTOM FEATURE ═══════
@@ -982,7 +982,7 @@ section { position: relative; }
   <nav class="site-nav" aria-label="Main navigation">
     <ul class="nav-links">
       <li><a href="capabilities.html">Capabilities</a></li>
-      <li><a href="case-studies.html">Case Studies</a></li>
+      <!-- hidden:case-studies <li><a href="case-studies.html">Case Studies</a></li> -->
       <li><a href="blog.html">Resources</a></li>
     </ul>
     <a href="contact.html" class="nav-cta">Talk to Our Team</a>
@@ -992,7 +992,7 @@ section { position: relative; }
 
 <div class="nav-drawer" id="nav-drawer" role="dialog" aria-label="Navigation menu">
   <a href="capabilities.html">Capabilities</a>
-  <a href="case-studies.html">Case Studies</a>
+  <!-- hidden:case-studies <a href="case-studies.html">Case Studies</a> -->
   <a href="blog.html">Resources</a>
   <a href="contact.html" class="nav-drawer-cta">Talk to Our Team</a>
 </div>
@@ -1456,7 +1456,7 @@ section { position: relative; }
       <ul class="footer-col-links">
         <li><a href="index.html">Home</a></li>
         <li><a href="capabilities.html">Capabilities</a></li>
-        <li><a href="case-studies.html">Case Studies</a></li>
+        <!-- hidden:case-studies <li><a href="case-studies.html">Case Studies</a></li> -->
       </ul>
     </div>
     <div class="footer-col">
@@ -1477,8 +1477,8 @@ section { position: relative; }
   <div class="footer-bottom">
     <p class="footer-copy">&copy; 2026 Health Generation. All rights reserved.</p>
     <ul class="footer-legal">
-      <li><a href="#">Privacy Policy</a></li>
-      <li><a href="#">Terms of Service</a></li>
+      <li><a href="privacy.html">Privacy Policy</a></li>
+      <li><a href="terms.html">Terms of Service</a></li>
     </ul>
   </div>
 </footer>
